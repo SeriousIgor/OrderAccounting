@@ -5,10 +5,7 @@ import com.springstudy.services.ClientService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 
@@ -25,8 +22,8 @@ public class ClientController {
     }
 
     @GetMapping("/clients")
-    public Collection<Client> getClients(@PathVariable String name, @PathVariable Integer pageNumber,
-                                         @PathVariable Integer pageSize) {
+    public Collection<Client> getClients(@RequestParam(value = "name", required = false) String name, @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+                                         @RequestParam(value = "pageSize", required = false) Integer pageSize) {
         System.out.println("getClients");
         try {
             return clientService.getClients(name, pageNumber, pageSize);
