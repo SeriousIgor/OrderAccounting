@@ -1,15 +1,15 @@
 package com.springstudy.models;
 
 public class Client {
-    private Integer cliendId;
+    private Integer clientId;
     private String firstName;
     private String lastName;
     private String phoneNumber;
     private String email;
     private Boolean isDeleted;
 
-    public Client(Integer cliendId, String firstName, String lastName, String phoneNumber, String email, Boolean isDeleted) {
-        this.cliendId = cliendId;
+    public Client(Integer clientId, String firstName, String lastName, String phoneNumber, String email, Boolean isDeleted) {
+        this.clientId = clientId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
@@ -17,12 +17,12 @@ public class Client {
         this.isDeleted = isDeleted;
     }
 
-    public Integer getCliendId() {
-        return cliendId;
+    public Integer getClientId() {
+        return clientId;
     }
 
-    public void setCliendId(Integer cliendId) {
-        this.cliendId = cliendId;
+    public void setClientId(Integer clientId) {
+        this.clientId = clientId;
     }
 
     public String getFirstName() {
