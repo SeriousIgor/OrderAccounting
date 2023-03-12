@@ -7,25 +7,19 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 
 public class ControllerUtil {
     private static final Logger LOG = Logger.getLogger(ControllerUtil.class.getName());
-    private final iService service;
+    protected final iService service;
 
-    public ControllerUtil(String recordName) {
-        iService temp;
-        {
-            temp = getService(recordName);
-        }
-        this.service = temp;
+    public ControllerUtil(iService service) {
+        this.service = service;
     }
 
     @GetMapping("/{id}")
     public Object getRecord(@PathVariable Integer id) {
         try {
-            System.out.println("service " + this.service);
             return this.service.getRecord(id);
         } catch (Exception ex) {
             LOG.error(ex.getMessage());
@@ -37,7 +31,7 @@ public class ControllerUtil {
     @GetMapping("/all")
     public Collection<Object> getRecords(@RequestParam(value = "pageNumber", required = false) Integer pageNumber,
                                          @RequestParam(value = "pageSize", required = false) Integer pageSize,
-                                         @RequestParam String... filters) {
+                                         @RequestParam(value = "filters", required = false) String... filters) {
         try {
             return this.service.getRecords(pageNumber, pageSize, filters);
         } catch (Exception ex) {
@@ -88,10 +82,12 @@ public class ControllerUtil {
     }
 
     private iService getService(String recordName) {
-        String serviceName = recordName + "Service";
+        String serviceName = "com.springstudy.services." + recordName + "Service";
         try {
+            System.out.println("serviceName " + serviceName);
             return (iService) Class.forName(serviceName).getConstructor().newInstance();
         } catch (Exception ex) {
+            System.err.println(ex.getMessage());
             return null;
         }
     }

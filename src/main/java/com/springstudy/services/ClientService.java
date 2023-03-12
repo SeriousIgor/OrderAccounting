@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 
-@Service
+@Service("ClientService")
 public class ClientService implements iService {
     private final ClientDao clientDao;
 
@@ -17,50 +17,6 @@ public class ClientService implements iService {
     public ClientService(ClientDao clientDao) {
         this.clientDao = clientDao;
     }
-
-//    public Client getClient(Integer clientId) {
-//        return this.clientDao.getClient(clientId);
-//    }
-//
-//    public Collection<Client> getClients(String name, Integer pageNumber, Integer pageSize) {
-//        if ((pageNumber == null) || (pageNumber < 1)) {
-//            pageNumber = 1;
-//        }
-//        if ((pageSize == null) || pageSize < 1) {
-//            pageSize = Integer.MAX_VALUE;
-//        }
-//        if ((name == null) || (name.trim().equals(""))){
-//            return this.clientDao.getClients(pageNumber, pageSize);
-//        } else {
-//            return this.clientDao.getClients(name, pageNumber, pageSize);
-//        }
-//    }
-//
-//    public Collection<Client> getDeletedClients(Integer pageNumber, Integer pageSize) {
-//        if ((pageNumber == null) || (pageNumber < 1)) {
-//            pageNumber = 1;
-//        }
-//        if ((pageSize == null) || pageSize < 1) {
-//            pageSize = Integer.MAX_VALUE;
-//        }
-//        return this.clientDao.getDeletedClients(pageNumber, pageSize);
-//    }
-//
-//    public Boolean createClient(Client newClient) {
-//        return this.clientDao.createClient(newClient);
-//    }
-//
-//    public Boolean updateClient(Client updatedClient) {
-//        return this.clientDao.updateClient(updatedClient);
-//    }
-//
-//    public Boolean deleteClient(Integer clientId, Boolean isSoftDelete) {
-//        if (isSoftDelete) {
-//            return this.clientDao.deleteClientSoft(clientId);
-//        } else {
-//            return this.clientDao.deleteClient(clientId);
-//        }
-//    }
 
     @Override
     public Object getRecord(Integer recordId) throws NotFoundException {
@@ -90,7 +46,7 @@ public class ClientService implements iService {
         if ((name == null) || (name.trim().equals(""))){
             return (Collection<Object>) (((Collection<?>)this.clientDao.getClients(offset, limit)));
         } else {
-            return (Collection<Object>) (((Collection<?>)this.clientDao.getClients(name,offset, limit)));
+            return (Collection<Object>) (((Collection<?>)this.clientDao.getClients(name, offset, limit)));
         }
     }
 

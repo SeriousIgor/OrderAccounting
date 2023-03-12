@@ -26,7 +26,7 @@ public class ClientDaoImplementation implements ClientDao {
     @Override
     public Client getClient(Integer clientId) throws NotFoundException {
         try {
-            return jdbcTemplate.queryForObject(ClientDao.GET_CLIENT_BY_ID, new ClientMapper(), clientId);
+            return jdbcTemplate.queryForObject(GET_CLIENT_BY_ID, new ClientMapper(), clientId);
         } catch (DataAccessException ex) {
             LOG.error(ex.getMessage());
             throw new NotFoundException("Client with Id '" + clientId + "' not found");
@@ -36,7 +36,7 @@ public class ClientDaoImplementation implements ClientDao {
     @Override
     public Collection<Client> getClients(int offset, int limit) throws NotFoundException {
         try {
-            return jdbcTemplate.query(ClientDao.GET_CLIENTS, new ClientMapper(), offset, limit);
+            return jdbcTemplate.query(GET_CLIENTS, new ClientMapper(), offset, limit);
         } catch (DataAccessException ex) {
             LOG.error(ex.getMessage());
             throw new NotFoundException("Clients not found");
@@ -44,32 +44,62 @@ public class ClientDaoImplementation implements ClientDao {
     }
 
     @Override
-    public Collection<Client> getClients(String name, int pageNumber, int pageSize) throws NotFoundException {
-        return null;
+    public Collection<Client> getClients(String name, int offset, int limit) throws NotFoundException {
+        try {
+            return jdbcTemplate.query(GET_CLIENTS_BY_NAME, new ClientMapper(), name, offset, limit);
+        } catch (DataAccessException ex) {
+            LOG.error(ex.getMessage());
+            throw new NotFoundException("Clients not found");
+        }
     }
 
     @Override
-    public Collection<Client> getDeletedClients(int pageNumber, int pageSize) throws NotFoundException {
-        return null;
+    public Collection<Client> getDeletedClients(int offset, int limit) throws NotFoundException {
+        try {
+            return jdbcTemplate.query(GET_DELETED_CLIENTS, new ClientMapper(), offset, limit);
+        } catch (DataAccessException ex) {
+            LOG.error(ex.getMessage());
+            throw new NotFoundException("Clients not found");
+        }
     }
 
     @Override
     public Boolean createClient(Client client) throws EmptyDatabaseException {
-        return null;
+        try {
+            return (jdbcTemplate.update(CREATE_CLIENT, client.getFirstName(), client.getLastName(), client.getPhoneNumber(), client.getEmail())) == 1;
+        } catch (DataAccessException ex) {
+            LOG.error(ex.getMessage());
+            throw new EmptyDatabaseException("Client create failed");
+        }
     }
 
     @Override
     public Boolean updateClient(Client client) throws EmptyDatabaseException {
-        return null;
+        try {
+            return (jdbcTemplate.update(UPDATE_CLIENT, client.getFirstName(), client.getLastName(), client.getPhoneNumber(), client.getEmail(), client.getClientId())) == 1;
+        } catch (DataAccessException ex) {
+            LOG.error(ex.getMessage());
+            throw new EmptyDatabaseException("Client update exception");
+        }
     }
 
     @Override
     public Boolean deleteClientSoft(Integer clientId) throws EmptyDatabaseException {
-        return null;
+        try {
+            return (jdbcTemplate.update(DELETE_CLIENT_SOFT, clientId)) == 1;
+        } catch (DataAccessException ex) {
+            LOG.error(ex.getMessage());
+            throw new EmptyDatabaseException("Client update exception");
+        }
     }
 
     @Override
     public Boolean deleteClient(Integer clientId) throws EmptyDatabaseException {
-        return null;
+        try {
+            return (jdbcTemplate.update(DELETE_CLIENT, clientId)) == 1;
+        } catch (DataAccessException ex) {
+            LOG.error(ex.getMessage());
+            throw new EmptyDatabaseException("Client delete exception");
+        }
     }
 }
