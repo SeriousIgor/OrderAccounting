@@ -16,7 +16,7 @@ public class ClientMapper implements RowMapper<Client> {
         String lastName = rs.getString("lastName");
         String phoneNumber = rs.getString("phoneNumber");
         String email = rs.getString("email");
-        Boolean isDeleted = (rs.getInt("isDeleted") == 1);
+        Boolean isDeleted = rs.getBoolean("isDeleted");
         return new Client(clientId, firstName, lastName, phoneNumber, email, isDeleted);
     }
 }

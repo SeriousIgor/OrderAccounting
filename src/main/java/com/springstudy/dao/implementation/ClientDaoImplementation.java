@@ -2,11 +2,12 @@ package com.springstudy.dao.implementation;
 
 import com.springstudy.dao.ClientDao;
 import com.springstudy.exceptions.EmptyDatabaseException;
-import com.springstudy.mappers.ClientMapper;
+//import com.springstudy.mappers.ClientMapper;
 import com.springstudy.models.Client;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import javassist.NotFoundException;
@@ -26,7 +27,8 @@ public class ClientDaoImplementation implements ClientDao {
     @Override
     public Client getClient(Integer clientId) throws NotFoundException {
         try {
-            return jdbcTemplate.queryForObject(GET_CLIENT_BY_ID, new ClientMapper(), clientId);
+            return jdbcTemplate.queryForObject(GET_CLIENT_BY_ID, /*new ClientMapper()*/
+                                               new BeanPropertyRowMapper<>(Client.class), clientId);
         } catch (DataAccessException ex) {
             LOG.error(ex.getMessage());
             throw new NotFoundException("Client with Id '" + clientId + "' not found");
@@ -36,7 +38,7 @@ public class ClientDaoImplementation implements ClientDao {
     @Override
     public Collection<Client> getClients(int offset, int limit) throws NotFoundException {
         try {
-            return jdbcTemplate.query(GET_CLIENTS, new ClientMapper(), offset, limit);
+            return jdbcTemplate.query(GET_CLIENTS, new BeanPropertyRowMapper<>(Client.class), offset, limit);
         } catch (DataAccessException ex) {
             LOG.error(ex.getMessage());
             throw new NotFoundException("Clients not found");
@@ -46,7 +48,7 @@ public class ClientDaoImplementation implements ClientDao {
     @Override
     public Collection<Client> getClients(String name, int offset, int limit) throws NotFoundException {
         try {
-            return jdbcTemplate.query(GET_CLIENTS_BY_NAME, new ClientMapper(), name, offset, limit);
+            return jdbcTemplate.query(GET_CLIENTS_BY_NAME, new BeanPropertyRowMapper<>(Client.class), name, offset, limit);
         } catch (DataAccessException ex) {
             LOG.error(ex.getMessage());
             throw new NotFoundException("Clients not found");
@@ -56,7 +58,7 @@ public class ClientDaoImplementation implements ClientDao {
     @Override
     public Collection<Client> getDeletedClients(int offset, int limit) throws NotFoundException {
         try {
-            return jdbcTemplate.query(GET_DELETED_CLIENTS, new ClientMapper(), offset, limit);
+            return jdbcTemplate.query(GET_DELETED_CLIENTS, new BeanPropertyRowMapper<>(Client.class), offset, limit);
         } catch (DataAccessException ex) {
             LOG.error(ex.getMessage());
             throw new NotFoundException("Clients not found");

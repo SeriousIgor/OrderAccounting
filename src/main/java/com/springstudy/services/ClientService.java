@@ -1,13 +1,16 @@
 package com.springstudy.services;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.springstudy.dao.ClientDao;
 import com.springstudy.exceptions.EmptyDatabaseException;
 import com.springstudy.models.Client;
+import com.springstudy.utils.ServiceUtils;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Map;
 
 @Service("ClientService")
 public class ClientService implements iService {
@@ -26,22 +29,13 @@ public class ClientService implements iService {
     @Override
     public Collection<Object> getRecords(Integer pageNumber, Integer pageSize, String... filters) throws NotFoundException {
         String name;
-        Integer limit;
-        Integer offset;
-        if (filters != null && filters.length > 0) {
+        Map<String, Integer> clientPaginationMap = ServiceUtils.getPagination(pageNumber, pageSize);
+        Integer offset = clientPaginationMap.get("offset");
+        Integer limit = clientPaginationMap.get("limit");
+        if (filters == null || filters.length == 0) {
             name = filters[0];
         } else {
             name = null;
-        }
-        if ((pageNumber == null) || (pageNumber < 1)) {
-            pageNumber = 0;
-        }
-        if ((pageSize == null) || pageSize < 1) {
-            offset = 0;
-            limit = Integer.MAX_VALUE;
-        } else {
-            offset = (pageNumber - 1) * pageSize;
-            limit = pageNumber * pageSize;
         }
         if ((name == null) || (name.trim().equals(""))){
             return (Collection<Object>) (((Collection<?>)this.clientDao.getClients(offset, limit)));
@@ -52,37 +46,27 @@ public class ClientService implements iService {
 
     @Override
     public Collection<Object> getDeletedRecords(Integer pageNumber, Integer pageSize) throws NotFoundException {
-        Integer limit;
-        Integer offset;
-        if ((pageNumber == null) || (pageNumber < 1)) {
-            pageNumber = 1;
-        }
-        if ((pageSize == null) || pageSize < 1) {
-            offset = 0;
-            limit = Integer.MAX_VALUE;
-        } else {
-            offset = (pageNumber - 1) * pageSize;
-            limit = pageNumber * pageSize;
-        }
-        return (Collection<Object>) (((Collection<?>)this.clientDao.getDeletedClients(offset, limit)));
+        Map<String, Integer> clientPaginationMap = ServiceUtils.getPagination(pageNumber, pageSize);
+        return (Collection<Object>) (((Collection<?>)this.clientDao.getDeletedClients(clientPaginationMap.get("offset"), clientPaginationMap.get("limit"))));
     }
 
     @Override
-    public Boolean createRecord(Object newRecord) throws EmptyDatabaseException {
-        return this.clientDao.createClient((Client) newRecord);
+    public Boolean createRecord(String newRecord) throws Exception {
+        Client newClient = new ObjectMapper().readValue(newRecord, Client.class);
+        return this.clientDao.createClient(newClient);
     }
 
     @Override
-    public Boolean updateRecord(Object updatedRecord) throws EmptyDatabaseException {
+    public Boolean updateRecord(Object updatedRecord) throws Exception {
         return this.clientDao.updateClient((Client) updatedRecord);
     }
 
     @Override
-    public Boolean deleteRecord(Integer recordId, Boolean isSoftDelete) throws EmptyDatabaseException {
-        if (isSoftDelete) {
-            return this.clientDao.deleteClientSoft(recordId);
-        } else {
+    public Boolean deleteRecord(Integer recordId, Boolean isSoftDelete) throws Exception {
+        if (isSoftDelete == null || !isSoftDelete) {
             return this.clientDao.deleteClient(recordId);
+        } else {
+            return this.clientDao.deleteClientSoft(recordId);
         }
     }
 }

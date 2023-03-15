@@ -17,6 +17,10 @@ public class Client {
         this.isDeleted = isDeleted;
     }
 
+    public Client() {
+
+    }
+
     public Integer getClientId() {
         return clientId;
     }
@@ -57,11 +61,11 @@ public class Client {
         this.email = email;
     }
 
-    public Boolean getDeleted() {
+    public Boolean getIsDeleted() {
         return isDeleted;
     }
 
-    public void setDeleted(Boolean deleted) {
-        isDeleted = deleted;
+    public void setIsDeleted(Boolean isDeleted) {
+        this.isDeleted = isDeleted;
     }
 }
