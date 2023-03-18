@@ -2,18 +2,19 @@ package com.springstudy.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.springstudy.dao.ClientDao;
-import com.springstudy.exceptions.EmptyDatabaseException;
 import com.springstudy.models.Client;
 import com.springstudy.utils.ServiceUtils;
 import javassist.NotFoundException;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 
 import java.util.Collection;
 import java.util.Map;
 
 @Service("ClientService")
-public class ClientService implements iService {
+public class ClientService implements iModelService {
     private final ClientDao clientDao;
 
     @Autowired
@@ -23,24 +24,18 @@ public class ClientService implements iService {
 
     @Override
     public Object getRecord(Integer recordId) throws NotFoundException {
-        return (Object) this.clientDao.getClient(recordId);
+        return this.clientDao.getClient(recordId);
     }
 
     @Override
     public Collection<Object> getRecords(Integer pageNumber, Integer pageSize, String... filters) throws NotFoundException {
-        String name;
         Map<String, Integer> clientPaginationMap = ServiceUtils.getPagination(pageNumber, pageSize);
         Integer offset = clientPaginationMap.get("offset");
         Integer limit = clientPaginationMap.get("limit");
-        if (filters == null || filters.length == 0) {
-            name = filters[0];
-        } else {
-            name = null;
-        }
-        if ((name == null) || (name.trim().equals(""))){
+        if (ArrayUtils.isEmpty(filters) || (ArrayUtils.get(filters, 0).trim().equals(""))){
             return (Collection<Object>) (((Collection<?>)this.clientDao.getClients(offset, limit)));
         } else {
-            return (Collection<Object>) (((Collection<?>)this.clientDao.getClients(name, offset, limit)));
+            return (Collection<Object>) (((Collection<?>)this.clientDao.getClients(ArrayUtils.get(filters, 0), offset, limit)));
         }
     }
 
@@ -52,13 +47,16 @@ public class ClientService implements iService {
 
     @Override
     public Boolean createRecord(String newRecord) throws Exception {
-        Client newClient = new ObjectMapper().readValue(newRecord, Client.class);
-        return this.clientDao.createClient(newClient);
+        return this.clientDao.createClient(
+                (Client) ServiceUtils.getParserRecordFromJson(newRecord, Client.class)
+        );
     }
 
     @Override
-    public Boolean updateRecord(Object updatedRecord) throws Exception {
-        return this.clientDao.updateClient((Client) updatedRecord);
+    public Boolean updateRecord(String updatedRecord) throws Exception {
+        return this.clientDao.updateClient(
+                (Client) ServiceUtils.getParserRecordFromJson(updatedRecord, Client.class)
+        );
     }
 
     @Override

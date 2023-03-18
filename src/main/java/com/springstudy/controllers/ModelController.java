@@ -1,16 +1,16 @@
-package com.springstudy.utils;
+package com.springstudy.controllers;
 
-import com.springstudy.services.iService;
+import com.springstudy.services.iModelService;
 import org.apache.log4j.Logger;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 
-public class MainController {
-    private static final Logger LOG = Logger.getLogger(MainController.class.getName());
-    protected final iService service;
+public class ModelController {
+    private static final Logger LOG = Logger.getLogger(ModelController.class.getName());
+    protected final iModelService service;
 
-    public MainController(iService service) {
+    public ModelController(iModelService service) {
         this.service = service;
     }
 
@@ -59,7 +59,7 @@ public class MainController {
     }
 
     @PutMapping("/update")
-    public Boolean updateRecord(@RequestBody Object newRecord) {
+    public Boolean updateRecord(@RequestBody String newRecord) {
         try {
             return this.service.updateRecord(newRecord);
         } catch (Exception ex) {

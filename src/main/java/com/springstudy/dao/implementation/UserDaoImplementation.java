@@ -35,12 +35,12 @@ public class UserDaoImplementation implements UserDao {
     }
 
     @Override
-    public User getUser(String email) throws NotFoundException {
+    public User getUser(String username) throws NotFoundException {
         try {
-            return this.jdbcTemplate.queryForObject(GET_USER_BY_EMAIL, new BeanPropertyRowMapper<>(User.class), email);
+            return this.jdbcTemplate.queryForObject(GET_USER_BY_USERNAME, new BeanPropertyRowMapper<>(User.class), username, username);
         } catch (DataAccessException ex) {
             LOG.error(ex.getMessage());
-            throw new NotFoundException("User with email '" + email + "' not found");
+            throw new NotFoundException("User with email '" + username + "' not found");
         }
     }
 
@@ -67,7 +67,7 @@ public class UserDaoImplementation implements UserDao {
     @Override
     public Boolean createUser(User user) throws EmptyDatabaseException {
         try {
-            return (this.jdbcTemplate.update(CREATE_USER, user.getUserName(), user.getEmail(), user.getFirstName(), user.getLastName(), user.getLastName()) == 1);
+            return (this.jdbcTemplate.update(CREATE_USER, user.getUserName(), user.getEmail(), user.getPassword(), user.getFirstName(), user.getLastName()) == 1);
         } catch (DataAccessException ex) {
             LOG.error(ex.getMessage());
             throw new EmptyDatabaseException("Create User failed");
@@ -77,7 +77,7 @@ public class UserDaoImplementation implements UserDao {
     @Override
     public Boolean updateUser(User user) throws EmptyDatabaseException {
         try {
-            return (this.jdbcTemplate.update(UPDATE_USER, user.getUserName(), user.getEmail(), user.getFirstName(), user.getLastName(), user.getLastName(), user.getUserId()) == 1);
+            return (this.jdbcTemplate.update(UPDATE_USER, user.getUserName(), user.getEmail(), user.getPassword(), user.getFirstName(), user.getLastName(), user.getUserId()) == 1);
         } catch (DataAccessException ex) {
             LOG.error(ex.getMessage());
             throw new EmptyDatabaseException("Update User failed");

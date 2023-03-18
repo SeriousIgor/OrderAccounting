@@ -1,6 +1,8 @@
 package com.springstudy.utils;
 
-import java.util.HashMap;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.util.Map;
 
 public class ServiceUtils {
@@ -18,5 +20,9 @@ public class ServiceUtils {
             limit = pageNumber * pageSize;
         }
         return Map.of("offset", offset, "limit", limit);
+    }
+
+    public static Object getParserRecordFromJson(String jsonValue, Class modelClass) throws JsonProcessingException {
+        return new ObjectMapper().readValue(jsonValue, modelClass);
     }
 }
