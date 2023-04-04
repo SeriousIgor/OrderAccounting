@@ -1,6 +1,5 @@
 package com.springstudy.services;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.springstudy.dao.ClientDao;
 import com.springstudy.models.Client;
 import com.springstudy.utils.ServiceUtils;
