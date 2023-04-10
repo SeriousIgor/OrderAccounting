@@ -1,5 +1,7 @@
 package com.springstudy.models;
 
+import com.springstudy.enums.Role;
+
 public class User {
     private Integer userId;
     private String userName;
@@ -86,5 +88,9 @@ public class User {
 
     public void setIsDeleted(Boolean isDeleted) {
         this.isDeleted = isDeleted;
+    }
+
+    public Role getRole() {
+        return this.isAdmin ? Role.ADMIN : Role.USER;
     }
 }
