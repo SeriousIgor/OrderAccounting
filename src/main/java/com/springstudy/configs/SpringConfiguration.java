@@ -1,5 +1,6 @@
 package com.springstudy.configs;
 
+import com.springstudy.security.services.UserDetailsServiceImplementation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -9,6 +10,13 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.sql.DataSource;
 
@@ -26,6 +34,10 @@ public class SpringConfiguration {
     @Autowired
     Environment environment;
 
+    /**
+     *          <p>A Java Spring Bean f</p>
+     * @return  void
+     */
     @Bean
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
@@ -35,13 +47,55 @@ public class SpringConfiguration {
         dataSource.setPassword(environment.getProperty("spring.datasource.password"));
         dataSource.setUrl(environment.getProperty("spring.datasource.url"));
 
-        System.out.println("Connected Data source: " + dataSource);
-
         return dataSource;
     }
 
+    /**
+     *          <p>A Java Spring Bean for receiving JdbcTemplate instance for providing interaction with DataBase</p>
+     * @return  A new JdbcTemplate instance with generated Data Source
+     * @since   1.0
+     * // TODO: 16.04.2023  Replace JDBC with Hibernate
+     */
     @Bean
     public JdbcTemplate jdbcTemplate() {
         return new JdbcTemplate(dataSource());
+    }
+
+    @Bean
+    public AuthenticationProvider authProvider() {
+        DaoAuthenticationProvider daoProvider = new DaoAuthenticationProvider();
+        daoProvider.setUserDetailsService(userDetailsService());
+        daoProvider.setPasswordEncoder(passwordEncoder());
+        return daoProvider;
+    }
+
+    /**
+     *          <p>A method for receiving encoder instance for the authentication provider</p>
+     * @return  instance of BCryptPasswordEncoder class which implements a PasswordEncoder interface
+     * @since   2.0
+     */
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    /**
+     *          <p>Spring Bean for UserDetailsService interface. It is used for Spring Boot Security</p>
+     * @return  An instance of class that implements an UserDetailsService interface
+     * @since   2.0
+     */
+    @Bean
+    public UserDetailsService userDetailsService() {
+        return new UserDetailsServiceImplementation();
+    }
+
+    /**
+     *          <p>Spring Bean for AuthenticationManager. It is used for Spring Boot Security</p>
+     * @return  An instance of AuthenticationManager received from the AuthenticationConfiguration class instance
+     * @since   2.0
+     */
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
     }
 }

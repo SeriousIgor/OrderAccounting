@@ -15,6 +15,17 @@ public class User {
     public User() {
     }
 
+    public User(String email, String userName, String firstName, String lastName, String password) {
+        this.email = email;
+        this.userName = userName;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.password = password;
+        this.userId = null;
+        this.isAdmin = false;
+        this.isDeleted = false;
+    }
+
     public User(Integer userId, String userName, String email, String firstName, String lastName, String password, Boolean isAdmin, Boolean isDeleted) {
         this.userId = userId;
         this.userName = userName;

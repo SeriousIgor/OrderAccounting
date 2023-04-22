@@ -9,9 +9,9 @@ import java.util.*;
 
 public class UserDetailsImplementation implements UserDetails {
 
-    private User user;
+    private final User user;
 
-    private GrantedAuthority authority;
+    private final GrantedAuthority authority;
 
     public UserDetailsImplementation(User user, GrantedAuthority authority) {
         this.user = user;
@@ -20,7 +20,7 @@ public class UserDetailsImplementation implements UserDetails {
 
     public static UserDetailsImplementation build(User user) {
         GrantedAuthority authority = new SimpleGrantedAuthority(user.getRole().toString());
-
+        System.out.println(authority.getAuthority());
         return new UserDetailsImplementation(user, authority);
     }
 
@@ -64,7 +64,7 @@ public class UserDetailsImplementation implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return this.user.getIsDeleted();
+        return !(this.user.getIsDeleted());
     }
 
     @Override
