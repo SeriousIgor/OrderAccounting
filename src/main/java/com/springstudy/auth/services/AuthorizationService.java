@@ -4,7 +4,7 @@ import com.springstudy.auth.enitites.AuthenticationRequest;
 import com.springstudy.auth.enitites.AuthenticationResponse;
 import com.springstudy.auth.enitites.RegisterRequest;
 import com.springstudy.dao.UserDao;
-import com.springstudy.exceptions.EmptyDatabaseException;
+import com.springstudy.exceptions.entities.EmptyDatabaseException;
 import com.springstudy.models.User;
 import com.springstudy.security.jwt.JwtService;
 import com.springstudy.security.services.UserDetailsImplementation;

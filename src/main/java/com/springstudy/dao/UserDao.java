@@ -1,7 +1,7 @@
 package com.springstudy.dao;
 
-import com.springstudy.exceptions.DeleteRecordException;
-import com.springstudy.exceptions.EmptyDatabaseException;
+import com.springstudy.exceptions.entities.DeleteRecordException;
+import com.springstudy.exceptions.entities.EmptyDatabaseException;
 import com.springstudy.models.User;
 import javassist.NotFoundException;
 

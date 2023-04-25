@@ -1,4 +1,4 @@
-package com.springstudy.exceptions;
+package com.springstudy.exceptions.entities;
 
 public class DeleteRecordException extends Exception {
     public DeleteRecordException(String message, Throwable throwable) {

@@ -1,7 +1,9 @@
 package com.springstudy.controllers;
 
 import com.springstudy.services.iModelService;
+import javassist.NotFoundException;
 import org.apache.log4j.Logger;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -15,66 +17,36 @@ public class ModelController {
     }
 
     @GetMapping("/{id}")
-    public Object getRecord(@PathVariable Integer id) {
-        try {
-            return this.service.getRecord(id);
-        } catch (Exception ex) {
-            LOG.error(ex.getMessage());
-            ex.printStackTrace();
-            return null;
-        }
+    public ResponseEntity<Object> getRecord(@PathVariable Integer id) throws NotFoundException {
+        return ResponseEntity.ok(this.service.getRecord(id));
     }
 
     @GetMapping("/all")
-    public Collection<Object> getRecords(@RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+    public ResponseEntity<Collection<Object>> getRecords(@RequestParam(value = "pageNumber", required = false) Integer pageNumber,
                                          @RequestParam(value = "pageSize", required = false) Integer pageSize,
-                                         @RequestParam(value = "filters", required = false) String... filters) {
-        try {
-            return this.service.getRecords(pageNumber, pageSize, filters);
-        } catch (Exception ex) {
-            LOG.error(ex.getMessage());
-            return null;
-        }
+                                         @RequestParam(value = "filters", required = false) String... filters) throws NotFoundException {
+            return ResponseEntity.ok(this.service.getRecords(pageNumber, pageSize, filters));
+
     }
 
     @GetMapping("/deleted")
-    public Collection<Object> getDeletedRecords(@RequestParam(value = "pageNumber", required = false) Integer pageNumber,
-                                                @RequestParam(value = "pageSize", required = false) Integer pageSize) {
-        try {
-            return this.service.getDeletedRecords(pageNumber, pageSize);
-        } catch (Exception ex) {
-            LOG.error(ex.getMessage());
-            return null;
-        }
+    public ResponseEntity<Collection<Object>> getDeletedRecords(@RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+                                                @RequestParam(value = "pageSize", required = false) Integer pageSize) throws NotFoundException {
+            return ResponseEntity.ok(this.service.getDeletedRecords(pageNumber, pageSize));
     }
 
     @PostMapping("/new")
-    public Boolean createRecord(@RequestBody String newRecord) {
-        try {
-            return this.service.createRecord(newRecord);
-        } catch (Exception ex) {
-            LOG.error(ex.getMessage());
-            return false;
-        }
+    public ResponseEntity<Boolean> createRecord(@RequestBody String newRecord) throws Exception {
+            return ResponseEntity.ok(this.service.createRecord(newRecord));
     }
 
     @PutMapping("/update")
-    public Boolean updateRecord(@RequestBody String newRecord) {
-        try {
-            return this.service.updateRecord(newRecord);
-        } catch (Exception ex) {
-            LOG.error(ex.getMessage());
-            return false;
-        }
+    public ResponseEntity<Boolean> updateRecord(@RequestBody String newRecord) throws Exception {
+        return ResponseEntity.ok(this.service.updateRecord(newRecord));
     }
 
     @DeleteMapping("/delete/{id}")
-    public Boolean deleteRecord(@PathVariable Integer id, @RequestParam(value = "soft", required = false) Boolean isSoftDelete) {
-        try {
-            return this.service.deleteRecord(id, isSoftDelete);
-        } catch (Exception ex) {
-            LOG.error(ex.getMessage());
-            return false;
-        }
+    public ResponseEntity<Boolean> deleteRecord(@PathVariable Integer id, @RequestParam(value = "soft", required = false) Boolean isSoftDelete) throws Exception {
+        return ResponseEntity.ok(this.service.deleteRecord(id, isSoftDelete));
     }
 }

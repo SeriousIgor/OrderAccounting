@@ -1,7 +1,7 @@
 package com.springstudy.dao.implementation;
 
 import com.springstudy.dao.ClientDao;
-import com.springstudy.exceptions.EmptyDatabaseException;
+import com.springstudy.exceptions.entities.EmptyDatabaseException;
 //import com.springstudy.mappers.ClientMapper;
 import com.springstudy.models.Client;
 import org.apache.log4j.Logger;

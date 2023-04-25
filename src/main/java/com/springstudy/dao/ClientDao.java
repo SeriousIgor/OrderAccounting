@@ -1,6 +1,6 @@
 package com.springstudy.dao;
 
-import com.springstudy.exceptions.EmptyDatabaseException;
+import com.springstudy.exceptions.entities.EmptyDatabaseException;
 import com.springstudy.models.Client;
 import javassist.NotFoundException;
 

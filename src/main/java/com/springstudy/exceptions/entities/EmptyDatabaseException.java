@@ -1,4 +1,4 @@
-package com.springstudy.exceptions;
+package com.springstudy.exceptions.entities;
 
 public class EmptyDatabaseException extends Exception{
     public EmptyDatabaseException(String message, Throwable throwable) {
