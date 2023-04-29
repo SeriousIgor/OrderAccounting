@@ -1,8 +1,7 @@
 package com.springstudy.dao.implementation;
 
 import com.springstudy.dao.ClientDao;
-import com.springstudy.exceptions.entities.EmptyDatabaseException;
-//import com.springstudy.mappers.ClientMapper;
+import com.springstudy.exceptions.entities.DatabaseDataUpdateException;
 import com.springstudy.models.Client;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,42 +65,42 @@ public class ClientDaoImplementation implements ClientDao {
     }
 
     @Override
-    public Boolean createClient(Client client) throws EmptyDatabaseException {
+    public Boolean createClient(Client client) throws DatabaseDataUpdateException {
         try {
             return (jdbcTemplate.update(CREATE_CLIENT, client.getFirstName(), client.getLastName(), client.getPhoneNumber(), client.getEmail())) == 1;
         } catch (DataAccessException ex) {
             LOG.error(ex.getMessage());
-            throw new EmptyDatabaseException("Client create failed");
+            throw new DatabaseDataUpdateException("Client create failed");
         }
     }
 
     @Override
-    public Boolean updateClient(Client client) throws EmptyDatabaseException {
+    public Boolean updateClient(Client client) throws DatabaseDataUpdateException {
         try {
             return (jdbcTemplate.update(UPDATE_CLIENT, client.getFirstName(), client.getLastName(), client.getPhoneNumber(), client.getEmail(), client.getClientId())) == 1;
         } catch (DataAccessException ex) {
             LOG.error(ex.getMessage());
-            throw new EmptyDatabaseException("Client update exception");
+            throw new DatabaseDataUpdateException("Client update failed");
         }
     }
 
     @Override
-    public Boolean deleteClientSoft(Integer clientId) throws EmptyDatabaseException {
+    public Boolean deleteClientSoft(Integer clientId) throws DatabaseDataUpdateException {
         try {
             return (jdbcTemplate.update(DELETE_CLIENT_SOFT, clientId)) == 1;
         } catch (DataAccessException ex) {
             LOG.error(ex.getMessage());
-            throw new EmptyDatabaseException("Client update exception");
+            throw new DatabaseDataUpdateException("Client soft delete failed");
         }
     }
 
     @Override
-    public Boolean deleteClient(Integer clientId) throws EmptyDatabaseException {
+    public Boolean deleteClient(Integer clientId) throws DatabaseDataUpdateException {
         try {
             return (jdbcTemplate.update(DELETE_CLIENT, clientId)) == 1;
         } catch (DataAccessException ex) {
             LOG.error(ex.getMessage());
-            throw new EmptyDatabaseException("Client delete exception");
+            throw new DatabaseDataUpdateException("Client delete failed");
         }
     }
 }

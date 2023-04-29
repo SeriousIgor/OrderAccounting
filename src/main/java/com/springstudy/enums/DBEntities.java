@@ -6,6 +6,6 @@ public enum DBEntities {
     Service,
     Order,
     User,
-    Worklog,
+    WorkLog,
     OrderServiceJunction
 }

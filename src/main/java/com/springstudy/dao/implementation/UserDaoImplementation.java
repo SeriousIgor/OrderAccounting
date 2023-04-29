@@ -1,8 +1,7 @@
 package com.springstudy.dao.implementation;
 
 import com.springstudy.dao.UserDao;
-import com.springstudy.exceptions.entities.DeleteRecordException;
-import com.springstudy.exceptions.entities.EmptyDatabaseException;
+import com.springstudy.exceptions.entities.DatabaseDataUpdateException;
 import com.springstudy.models.User;
 import javassist.NotFoundException;
 import org.apache.log4j.Logger;
@@ -65,42 +64,42 @@ public class UserDaoImplementation implements UserDao {
     }
 
     @Override
-    public Boolean createUser(User user) throws EmptyDatabaseException {
+    public Boolean createUser(User user) throws DatabaseDataUpdateException {
         try {
             return (this.jdbcTemplate.update(CREATE_USER, user.getUserName(), user.getEmail(), user.getPassword(), user.getFirstName(), user.getLastName()) == 1);
         } catch (DataAccessException ex) {
             LOG.error(ex.getMessage());
-            throw new EmptyDatabaseException("Create User failed");
+            throw new DatabaseDataUpdateException("Create User failed");
         }
     }
 
     @Override
-    public Boolean updateUser(User user) throws EmptyDatabaseException {
+    public Boolean updateUser(User user) throws DatabaseDataUpdateException {
         try {
             return (this.jdbcTemplate.update(UPDATE_USER, user.getUserName(), user.getEmail(), user.getPassword(), user.getFirstName(), user.getLastName(), user.getUserId()) == 1);
         } catch (DataAccessException ex) {
             LOG.error(ex.getMessage());
-            throw new EmptyDatabaseException("Update User failed");
+            throw new DatabaseDataUpdateException("Update User failed");
         }
     }
 
     @Override
-    public Boolean deleteUserSoft(Integer userId) throws DeleteRecordException {
+    public Boolean deleteUserSoft(Integer userId) throws DatabaseDataUpdateException {
         try {
             return (this.jdbcTemplate.update(DELETE_USER_SOFT, userId) == 1);
         } catch (DataAccessException ex) {
             LOG.error(ex.getMessage());
-            throw new DeleteRecordException("Soft Delete User failed");
+            throw new DatabaseDataUpdateException("Soft Delete User failed");
         }
     }
 
     @Override
-    public Boolean deleteUser(Integer userId) throws DeleteRecordException {
+    public Boolean deleteUser(Integer userId) throws DatabaseDataUpdateException {
         try {
             return (this.jdbcTemplate.update(DELETE_USER, userId) == 1);
         } catch (DataAccessException ex) {
             LOG.error(ex.getMessage());
-            throw new DeleteRecordException("Delete User failed");
+            throw new DatabaseDataUpdateException("Delete User failed");
         }
     }
 }

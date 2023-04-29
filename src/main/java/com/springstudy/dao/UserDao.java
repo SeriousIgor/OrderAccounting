@@ -1,7 +1,6 @@
 package com.springstudy.dao;
 
-import com.springstudy.exceptions.entities.DeleteRecordException;
-import com.springstudy.exceptions.entities.EmptyDatabaseException;
+import com.springstudy.exceptions.entities.DatabaseDataUpdateException;
 import com.springstudy.models.User;
 import javassist.NotFoundException;
 
@@ -12,10 +11,10 @@ public interface UserDao {
     User getUser(String email) throws NotFoundException;
     Collection<User> getUsers(int offset, int limit) throws NotFoundException;
     Collection<User> getDeletedUsers(int offset, int limit) throws NotFoundException;
-    Boolean createUser(User user) throws EmptyDatabaseException;
-    Boolean updateUser(User user) throws EmptyDatabaseException;
-    Boolean deleteUserSoft(Integer userId) throws DeleteRecordException;
-    Boolean deleteUser(Integer userId) throws DeleteRecordException;
+    Boolean createUser(User user) throws DatabaseDataUpdateException;
+    Boolean updateUser(User user) throws DatabaseDataUpdateException;
+    Boolean deleteUserSoft(Integer userId) throws DatabaseDataUpdateException;
+    Boolean deleteUser(Integer userId) throws DatabaseDataUpdateException;
 
     String GET_USER = "SELECT * FROM Users WHERE userId = ?";
     String GET_USERS = "SELECT * FROM Users WHERE isDeleted = false OFFSET ? LIMIT ?";

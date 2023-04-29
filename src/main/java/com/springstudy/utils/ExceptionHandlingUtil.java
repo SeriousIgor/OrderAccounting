@@ -8,11 +8,6 @@ import java.time.LocalDateTime;
 
 public class ExceptionHandlingUtil {
     public static ApiError generateApiError(Exception ex, HttpServletRequest request, HttpStatus status) {
-        return new ApiError(
-                request.getRequestURI(),
-                ex.getMessage(),
-                status.value(),
-                LocalDateTime.now()
-        );
+        return new ApiError(request.getRequestURI(), ex.getMessage(), status.value(), LocalDateTime.now());
     }
 }

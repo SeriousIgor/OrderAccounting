@@ -1,6 +1,6 @@
 package com.springstudy.dao;
 
-import com.springstudy.exceptions.entities.EmptyDatabaseException;
+import com.springstudy.exceptions.entities.DatabaseDataUpdateException;
 import com.springstudy.models.Client;
 import javassist.NotFoundException;
 
@@ -11,10 +11,10 @@ public interface ClientDao {
     Collection<Client> getClients(int offset, int limit) throws NotFoundException;
     Collection<Client> getClients(String name, int offset, int limit) throws NotFoundException;
     Collection<Client> getDeletedClients(int offset, int limit) throws NotFoundException;
-    Boolean createClient(Client client) throws EmptyDatabaseException;
-    Boolean updateClient(Client client) throws EmptyDatabaseException;
-    Boolean deleteClientSoft(Integer clientId) throws EmptyDatabaseException;
-    Boolean deleteClient(Integer clientId) throws EmptyDatabaseException;
+    Boolean createClient(Client client) throws DatabaseDataUpdateException;
+    Boolean updateClient(Client client) throws DatabaseDataUpdateException;
+    Boolean deleteClientSoft(Integer clientId) throws DatabaseDataUpdateException;
+    Boolean deleteClient(Integer clientId) throws DatabaseDataUpdateException;
 
     String GET_CLIENT_BY_ID = "SELECT * FROM Clients WHERE clientId = ?";
 
