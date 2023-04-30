@@ -1,8 +1,9 @@
 package com.springstudy.controllers;
 
 import com.springstudy.services.UserService;
-import org.apache.log4j.Logger;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,8 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/user")
 public class UserController extends ModelController {
 
-    private UserService userService;
-    private Logger LOG = Logger.getLogger(UserController.class);
+    private final UserService userService;
 
     @Autowired
     public UserController(UserService userService) {
@@ -21,13 +21,7 @@ public class UserController extends ModelController {
     }
 
     @GetMapping("/getByUsername")
-    public Object getRecord(@RequestParam("username") String username) {
-        try {
-            return this.userService.getRecord(username);
-        } catch (Exception ex) {
-            LOG.error(ex.getMessage());
-            ex.printStackTrace();
-            return null;
-        }
+    public ResponseEntity<Object> getRecord(@RequestParam("username") String username) throws NotFoundException {
+        return ResponseEntity.ok(this.userService.getRecord(username));
     }
 }
