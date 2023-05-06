@@ -5,10 +5,11 @@ import com.springstudy.models.User;
 import javassist.NotFoundException;
 
 import java.util.Collection;
+import java.util.Optional;
 
 public interface UserDao {
-    User getUser(Integer userId) throws NotFoundException;
-    User getUser(String email) throws NotFoundException;
+    Optional<User> getUser(Integer userId);
+    Optional<User> getUser(String email);
     Collection<User> getUsers(int offset, int limit) throws NotFoundException;
     Collection<User> getDeletedUsers(int offset, int limit) throws NotFoundException;
     Boolean createUser(User user) throws DatabaseDataUpdateException;

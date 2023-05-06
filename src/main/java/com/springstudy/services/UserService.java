@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 
 @Service("UserService")
 public class UserService implements iModelService {
@@ -21,12 +22,12 @@ public class UserService implements iModelService {
     }
 
     @Override
-    public Object getRecord(Integer recordId) throws NotFoundException {
-        return this.userDao.getUser(recordId);
+    public Optional<Object> getRecord(Integer recordId) throws NotFoundException {
+        return this.userDao.getUser(recordId).map(user -> user);
     }
 
-    public Object getRecord(String name) throws NotFoundException {
-        return this.userDao.getUser(name);
+    public Optional<Object> getRecord(String name) throws NotFoundException {
+        return this.userDao.getUser(name).map(user -> user);
     }
 
     @Override

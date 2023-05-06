@@ -5,9 +5,10 @@ import com.springstudy.models.Client;
 import javassist.NotFoundException;
 
 import java.util.Collection;
+import java.util.Optional;
 
 public interface ClientDao {
-    Client getClient(Integer clientId) throws NotFoundException;
+    Optional<Client> getClient(Integer clientId) throws NotFoundException;
     Collection<Client> getClients(int offset, int limit) throws NotFoundException;
     Collection<Client> getClients(String name, int offset, int limit) throws NotFoundException;
     Collection<Client> getDeletedClients(int offset, int limit) throws NotFoundException;

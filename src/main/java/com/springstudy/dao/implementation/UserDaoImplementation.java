@@ -12,6 +12,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
+import java.util.Optional;
 
 @Repository
 public class UserDaoImplementation implements UserDao {
@@ -24,23 +25,25 @@ public class UserDaoImplementation implements UserDao {
     }
 
     @Override
-    public User getUser(Integer userId) throws NotFoundException {
+    public Optional<User> getUser(Integer userId){
         try {
-            return this.jdbcTemplate.queryForObject(GET_USER, new BeanPropertyRowMapper<>(User.class), userId);
+            return Optional.ofNullable(this.jdbcTemplate.queryForObject(GET_USER, new BeanPropertyRowMapper<>(User.class), userId));
         } catch (DataAccessException ex) {
             LOG.error(ex.getMessage());
-            throw new NotFoundException("User with Id '" + userId + "' not found");
+//            throw new NotFoundException("User with Id '" + userId + "' not found");
+            return Optional.empty();
         }
     }
 
     @Override
-    public User getUser(String username) throws NotFoundException {
+    public Optional<User> getUser(String username) {
         try {
-            return this.jdbcTemplate.queryForObject(GET_USER_BY_USERNAME, new BeanPropertyRowMapper<>(User.class), username, username);
+            return Optional.ofNullable(this.jdbcTemplate.queryForObject(GET_USER_BY_USERNAME, new BeanPropertyRowMapper<>(User.class), username, username));
         } catch (DataAccessException ex) {
             LOG.error(ex.getMessage());
-            throw new NotFoundException("User with email '" + username + "' not found");
+//            throw new NotFoundException("User with username '" + username + "' not found");
         }
+        return Optional.empty();
     }
 
     @Override

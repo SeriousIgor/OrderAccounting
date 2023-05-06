@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 
 @Service("ClientService")
 public class ClientService implements iModelService {
@@ -22,8 +23,8 @@ public class ClientService implements iModelService {
     }
 
     @Override
-    public Object getRecord(Integer recordId) throws NotFoundException {
-        return this.clientDao.getClient(recordId);
+    public Optional<Object> getRecord(Integer recordId) throws NotFoundException {
+        return this.clientDao.getClient(recordId).map(record -> record);
     }
 
     @Override

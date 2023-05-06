@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.Optional;
 
 public class ModelController {
     private static final Logger LOG = Logger.getLogger(ModelController.class.getName());
@@ -17,7 +18,7 @@ public class ModelController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> getRecord(@PathVariable Integer id) throws NotFoundException {
+    public ResponseEntity<Optional<Object>> getRecord(@PathVariable Integer id) throws NotFoundException {
         return ResponseEntity.ok(this.service.getRecord(id));
     }
 

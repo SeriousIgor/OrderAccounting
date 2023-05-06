@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import javassist.NotFoundException;
 
 import java.util.Collection;
+import java.util.Optional;
 
 @Repository
 public class ClientDaoImplementation implements ClientDao {
@@ -24,10 +25,10 @@ public class ClientDaoImplementation implements ClientDao {
     }
 
     @Override
-    public Client getClient(Integer clientId) throws NotFoundException {
+    public Optional<Client> getClient(Integer clientId) throws NotFoundException {
         try {
-            return jdbcTemplate.queryForObject(GET_CLIENT_BY_ID, /*new ClientMapper()*/
-                                               new BeanPropertyRowMapper<>(Client.class), clientId);
+            return Optional.ofNullable(jdbcTemplate.queryForObject(GET_CLIENT_BY_ID, /*new ClientMapper()*/
+                                               new BeanPropertyRowMapper<>(Client.class), clientId));
         } catch (DataAccessException ex) {
             LOG.error(ex.getMessage());
             throw new NotFoundException("Client with Id '" + clientId + "' not found");
