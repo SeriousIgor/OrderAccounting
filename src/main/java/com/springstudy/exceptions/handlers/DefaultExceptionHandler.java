@@ -30,14 +30,13 @@ public class DefaultExceptionHandler {
     @ExceptionHandler(value = {NotFoundException.class})
     public ResponseEntity<Object> handleException(NotFoundException e, HttpServletRequest request) {
         return new ResponseEntity<>(
-                ExceptionHandlingUtil.generateApiError(e, request, HttpStatus.FORBIDDEN),
-                HttpStatus.FORBIDDEN
+                ExceptionHandlingUtil.generateApiError(e, request, HttpStatus.NOT_FOUND),
+                HttpStatus.NOT_FOUND
         );
     }
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Object> handleException(RuntimeException e, HttpServletRequest request) {
-        System.out.println(e);
         return new ResponseEntity<>(
                 ExceptionHandlingUtil.generateApiError(e, request, HttpStatus.INTERNAL_SERVER_ERROR),
                 HttpStatus.INTERNAL_SERVER_ERROR
