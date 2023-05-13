@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service("ClientService")
 public class ClientService implements iModelService {
@@ -28,21 +29,25 @@ public class ClientService implements iModelService {
     }
 
     @Override
-    public Collection<Object> getRecords(Integer pageNumber, Integer pageSize, String... filters) throws NotFoundException {
+    public Collection<Optional<Object>> getRecords(Integer pageNumber, Integer pageSize, String... filters) throws NotFoundException {
         Map<String, Integer> clientPaginationMap = ServiceUtils.getPagination(pageNumber, pageSize);
         Integer offset = clientPaginationMap.get("offset");
         Integer limit = clientPaginationMap.get("limit");
+        Collection<Optional<Client>> clientCollection;
         if (ArrayUtils.isEmpty(filters) || (ArrayUtils.get(filters, 0).trim().equals(""))){
-            return (Collection<Object>) (((Collection<?>)this.clientDao.getClients(offset, limit)));
+            clientCollection = this.clientDao.getClients(offset, limit);
         } else {
-            return (Collection<Object>) (((Collection<?>)this.clientDao.getClients(ArrayUtils.get(filters, 0), offset, limit)));
+            clientCollection = this.clientDao.getClients(ArrayUtils.get(filters, 0), offset, limit);
         }
+
+        return clientCollection.stream().map(client -> Optional.of((Object) client.get())).collect(Collectors.toList());
     }
 
     @Override
-    public Collection<Object> getDeletedRecords(Integer pageNumber, Integer pageSize) throws NotFoundException {
+    public Collection<Optional<Object>> getDeletedRecords(Integer pageNumber, Integer pageSize) throws NotFoundException {
         Map<String, Integer> clientPaginationMap = ServiceUtils.getPagination(pageNumber, pageSize);
-        return (Collection<Object>) (((Collection<?>)this.clientDao.getDeletedClients(clientPaginationMap.get("offset"), clientPaginationMap.get("limit"))));
+        return this.clientDao.getDeletedClients(clientPaginationMap.get("offset"), clientPaginationMap.get("limit"))
+                .stream().map(client -> Optional.of((Object) client.get())).collect(Collectors.toList());
     }
 
     @Override

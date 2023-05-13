@@ -10,8 +10,8 @@ import java.util.Optional;
 public interface UserDao {
     Optional<User> getUser(Integer userId);
     Optional<User> getUser(String email);
-    Collection<User> getUsers(int offset, int limit) throws NotFoundException;
-    Collection<User> getDeletedUsers(int offset, int limit) throws NotFoundException;
+    Collection<Optional<User>> getUsers(int offset, int limit) throws NotFoundException;
+    Collection<Optional<User>> getDeletedUsers(int offset, int limit) throws NotFoundException;
     Boolean createUser(User user) throws DatabaseDataUpdateException;
     Boolean updateUser(User user) throws DatabaseDataUpdateException;
     Boolean deleteUserSoft(Integer userId) throws DatabaseDataUpdateException;

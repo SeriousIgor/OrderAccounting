@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 public class UserDaoImplementation implements UserDao {
@@ -47,9 +48,9 @@ public class UserDaoImplementation implements UserDao {
     }
 
     @Override
-    public Collection<User> getUsers(int offset, int limit) throws NotFoundException {
+    public Collection<Optional<User>> getUsers(int offset, int limit) throws NotFoundException {
         try {
-            return this.jdbcTemplate.query(GET_USERS, new BeanPropertyRowMapper<>(User.class), offset, limit);
+            return collectRecordList(this.jdbcTemplate.query(GET_USERS, new BeanPropertyRowMapper<>(User.class), offset, limit));
         } catch (DataAccessException ex) {
             LOG.error(ex.getMessage());
             throw new NotFoundException("Users not found");
@@ -57,9 +58,9 @@ public class UserDaoImplementation implements UserDao {
     }
 
     @Override
-    public Collection<User> getDeletedUsers(int offset, int limit) throws NotFoundException {
+    public Collection<Optional<User>> getDeletedUsers(int offset, int limit) throws NotFoundException {
         try {
-            return this.jdbcTemplate.query(GET_DELETED_USERS, new BeanPropertyRowMapper<>(User.class), offset, limit);
+            return collectRecordList(this.jdbcTemplate.query(GET_DELETED_USERS, new BeanPropertyRowMapper<>(User.class), offset, limit));
         } catch (DataAccessException ex) {
             LOG.error(ex.getMessage());
             throw new NotFoundException("Deleted Users not found");
@@ -104,5 +105,12 @@ public class UserDaoImplementation implements UserDao {
             LOG.error(ex.getMessage());
             throw new DatabaseDataUpdateException("Delete User failed");
         }
+    }
+
+    private Collection<Optional<User>> collectRecordList(Collection<User> recordList) {
+        return recordList
+                .stream()
+                .map(Optional::ofNullable)
+                .collect(Collectors.toList());
     }
 }

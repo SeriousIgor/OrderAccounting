@@ -13,6 +13,7 @@ import javassist.NotFoundException;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 public class ClientDaoImplementation implements ClientDao {
@@ -36,9 +37,9 @@ public class ClientDaoImplementation implements ClientDao {
     }
 
     @Override
-    public Collection<Client> getClients(int offset, int limit) throws NotFoundException {
+    public Collection<Optional<Client>> getClients(int offset, int limit) throws NotFoundException {
         try {
-            return jdbcTemplate.query(GET_CLIENTS, new BeanPropertyRowMapper<>(Client.class), offset, limit);
+            return collectRecordList(jdbcTemplate.query(GET_CLIENTS, new BeanPropertyRowMapper<>(Client.class), offset, limit));
         } catch (DataAccessException ex) {
             LOG.error(ex.getMessage());
             throw new NotFoundException("Clients not found");
@@ -46,9 +47,9 @@ public class ClientDaoImplementation implements ClientDao {
     }
 
     @Override
-    public Collection<Client> getClients(String name, int offset, int limit) throws NotFoundException {
+    public Collection<Optional<Client>> getClients(String name, int offset, int limit) throws NotFoundException {
         try {
-            return jdbcTemplate.query(GET_CLIENTS_BY_NAME, new BeanPropertyRowMapper<>(Client.class), name, offset, limit);
+            return collectRecordList(jdbcTemplate.query(GET_CLIENTS_BY_NAME, new BeanPropertyRowMapper<>(Client.class), name, offset, limit));
         } catch (DataAccessException ex) {
             LOG.error(ex.getMessage());
             throw new NotFoundException("Clients not found");
@@ -56,9 +57,9 @@ public class ClientDaoImplementation implements ClientDao {
     }
 
     @Override
-    public Collection<Client> getDeletedClients(int offset, int limit) throws NotFoundException {
+    public Collection<Optional<Client>> getDeletedClients(int offset, int limit) throws NotFoundException {
         try {
-            return jdbcTemplate.query(GET_DELETED_CLIENTS, new BeanPropertyRowMapper<>(Client.class), offset, limit);
+            return collectRecordList(jdbcTemplate.query(GET_DELETED_CLIENTS, new BeanPropertyRowMapper<>(Client.class), offset, limit));
         } catch (DataAccessException ex) {
             LOG.error(ex.getMessage());
             throw new NotFoundException("Clients not found");
@@ -103,5 +104,12 @@ public class ClientDaoImplementation implements ClientDao {
             LOG.error(ex.getMessage());
             throw new DatabaseDataUpdateException("Client delete failed");
         }
+    }
+
+    private Collection<Optional<Client>> collectRecordList(Collection<Client> recordList) {
+        return recordList
+                .stream()
+                .map(Optional::ofNullable)
+                .collect(Collectors.toList());
     }
 }

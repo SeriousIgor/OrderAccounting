@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service("UserService")
 public class UserService implements iModelService {
@@ -31,15 +32,21 @@ public class UserService implements iModelService {
     }
 
     @Override
-    public Collection<Object> getRecords(Integer pageNumber, Integer pageSize, String... filters) throws NotFoundException {
+    public Collection<Optional<Object>> getRecords(Integer pageNumber, Integer pageSize, String... filters) throws NotFoundException {
         Map<String, Integer> userPaginationMap = ServiceUtils.getPagination(pageNumber, pageSize);
-        return (Collection<Object>) (((Collection<?>)this.userDao.getUsers(userPaginationMap.get("offset"), userPaginationMap.get("limit"))));
+        return this.userDao.getUsers(userPaginationMap.get("offset"), userPaginationMap.get("limit"))
+                .stream()
+                .map(user -> Optional.of((Object) user.get()))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Collection<Object> getDeletedRecords(Integer pageNumber, Integer pageSize) throws NotFoundException {
+    public Collection<Optional<Object>> getDeletedRecords(Integer pageNumber, Integer pageSize) throws NotFoundException {
         Map<String, Integer> userPaginationMap = ServiceUtils.getPagination(pageNumber, pageSize);
-        return (Collection<Object>) (((Collection<?>)this.userDao.getDeletedUsers(userPaginationMap.get("offset"), userPaginationMap.get("limit"))));
+        return this.userDao.getDeletedUsers(userPaginationMap.get("offset"), userPaginationMap.get("limit"))
+                .stream()
+                .map(user -> Optional.of((Object) user.get()))
+                .collect(Collectors.toList());
     }
 
     @Override
