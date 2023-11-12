@@ -1,6 +1,5 @@
 package com.springstudy.services;
 
-import com.springstudy.dao.ClientDao;
 import com.springstudy.models.Client;
 import com.springstudy.repositories.ClientRepository;
 import com.springstudy.utils.ServiceUtils;
@@ -10,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 
 import java.util.Collection;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 

@@ -53,6 +53,9 @@ public class Client {
     @OneToMany(mappedBy = "client")
     private Set<Card> cards = new HashSet<>();
 
+//    @OneToMany(mappedBy = "client")
+//    private Set<Order> orders = new HashSet<>();
+
     public Client(Integer id, String firstName, String lastName, String phoneNumber, String email, Boolean isDeleted) {
         this.id = id;
         this.firstName = firstName;

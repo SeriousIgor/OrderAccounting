@@ -2,12 +2,14 @@ package com.springstudy.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.springstudy.enums.CardType;
+import com.springstudy.listeners.CardListener;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 
 @Table(name = "card")
 @Entity(name = "Card")
+@EntityListeners(CardListener.class)
 public class Card {
     @Id
     @SequenceGenerator(
@@ -35,13 +37,11 @@ public class Card {
     )
     private CardType cardType;
     @Column(
-            name = "bonus_amount",
-            columnDefinition = "DECIMAL(10, 1) DEFAULT 0.0"
+            name = "bonus_amount"
     )
     private BigDecimal bonusAmount;
     @Column(
-            name = "discount_percentage",
-            columnDefinition = "DECIMAL(2, 1) DEFAULT 0.0"
+            name = "discount_percentage"
     )
     private BigDecimal discountPercentage;
 

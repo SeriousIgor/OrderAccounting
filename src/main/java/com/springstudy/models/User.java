@@ -14,14 +14,14 @@ import java.util.*;
 public class User implements UserDetails {
     @Id
     @SequenceGenerator(
-            name = "service_sequence",
-            sequenceName = "service_sequence",
+            name = "user_sequence",
+            sequenceName = "user_sequence",
             allocationSize = 1,
             initialValue = 1
     )
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "service_sequence"
+            generator = "user_sequence"
     )
     @Column(
             name = "user_id",
@@ -70,6 +70,9 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "user")
     private Set<WorkLog> workLogs = new HashSet<>();
+
+//    @OneToMany(mappedBy = "user")
+//    private Set<Order> orders = new HashSet<>();
 
     public User() {
     }

@@ -2,12 +2,10 @@ package com.springstudy.models;
 
 import jakarta.persistence.*;
 
-@Table(
-        name = "service"
-//        uniqueConstraints = {
-//                @UniqueConstraint(name = "", columnNames = "")
-//        }
-)
+import java.util.HashSet;
+import java.util.Set;
+
+@Table(name = "service")
 @Entity(name = "Service")
 public class Service {
     @Id
@@ -49,6 +47,9 @@ public class Service {
             name = "is_deleted"
     )
     private Boolean isDeleted;
+
+//    @ManyToMany(mappedBy = "enrolledServices")
+//    private Set<Order> orders = new HashSet<>();
 
     public Service() {
     }
@@ -99,6 +100,10 @@ public class Service {
     public void setDeleted(Boolean deleted) {
         isDeleted = deleted;
     }
+
+//    public Set<Order> getOrders() {
+//        return this.orders;
+//    }
 
     @Override
     public String toString() {
