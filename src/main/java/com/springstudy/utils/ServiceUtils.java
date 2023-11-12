@@ -1,28 +1,40 @@
 package com.springstudy.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
-import java.util.Map;
+import java.lang.reflect.Field;
 
 public class ServiceUtils {
-    public static Map<String, Integer> getPagination(Integer pageNumber, Integer pageSize) {
-        int offset;
-        int limit;
-        if ((pageNumber == null) || (pageNumber < 1)) {
-            pageNumber = 1;
-        }
-        if ((pageSize == null) || pageSize < 1) {
-            offset = 0;
-            limit = Integer.MAX_VALUE;
-        } else {
-            offset = (pageNumber - 1) * pageSize;
-            limit = pageNumber * pageSize;
-        }
-        return Map.of("offset", offset, "limit", limit);
+
+    public static Pageable getPagination(Integer pageNumber, Integer pageSize) {
+        boolean isInvalidPageNumber = (pageNumber == null || pageNumber < 0);
+        boolean isInvalidPageSize = (pageSize == null || pageSize < 0);
+        Integer pgNum = isInvalidPageNumber ? Integer.valueOf(0) : pageNumber;
+        Integer pgSize = isInvalidPageSize ? Integer.MAX_VALUE : pageSize;
+        return PageRequest.of(pgNum, pgSize);
     }
 
-    public static Object getParserRecordFromJson(String jsonValue, Class modelClass) throws JsonProcessingException {
-        return new ObjectMapper().readValue(jsonValue, modelClass);
+    public static <T>T getParserRecordFromJson(String jsonValue, Class<T> modelClass) throws JsonProcessingException, IllegalAccessException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode jsonNode = objectMapper.readTree(jsonValue);
+
+        T result = objectMapper.treeToValue(jsonNode, modelClass);
+        handleNestedObjects(result, jsonNode, objectMapper);
+
+        return result;
+    }
+
+    private static void handleNestedObjects(Object result, JsonNode jsonNode, ObjectMapper objectMapper) throws JsonProcessingException, IllegalAccessException {
+        for (Field field : result.getClass().getDeclaredFields()) {
+            field.setAccessible(true);
+
+            if (!field.getType().isPrimitive() && jsonNode.has(field.getName())) {
+                field.set(result, objectMapper.treeToValue(jsonNode.path(field.getName()), field.getType()));
+            }
+        }
     }
 }

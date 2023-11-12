@@ -1,6 +1,6 @@
 package com.springstudy.configs;
 
-import com.springstudy.security.services.UserDetailsServiceImplementation;
+import com.springstudy.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -15,6 +15,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -62,9 +63,9 @@ public class SpringConfiguration {
     }
 
     @Bean
-    public AuthenticationProvider authProvider() {
+    public AuthenticationProvider authProvider(UserRepository userRepository) {
         DaoAuthenticationProvider daoProvider = new DaoAuthenticationProvider();
-        daoProvider.setUserDetailsService(userDetailsService());
+        daoProvider.setUserDetailsService(userDetailsService(userRepository));
         daoProvider.setPasswordEncoder(passwordEncoder());
         return daoProvider;
     }
@@ -85,8 +86,9 @@ public class SpringConfiguration {
      * @since   2.0
      */
     @Bean
-    public UserDetailsService userDetailsService() {
-        return new UserDetailsServiceImplementation();
+    public UserDetailsService userDetailsService(UserRepository userRepository) {
+        return  username -> userRepository.findByUsername(username)
+            .orElseThrow(() -> new UsernameNotFoundException("User with username: " + username + " not found"));
     }
 
     /**

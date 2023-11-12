@@ -1,74 +1,76 @@
 package com.springstudy.services;
 
-import com.springstudy.dao.UserDao;
 import com.springstudy.models.User;
+import com.springstudy.repositories.UserRepository;
 import com.springstudy.utils.ServiceUtils;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
-import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service("UserService")
-public class UserService implements iModelService {
+public class UserService implements iModelService<User> {
 
-    private final UserDao userDao;
-
+    private final UserRepository userRepository;
     @Autowired
-    public UserService(UserDao userDao) {
-        this.userDao = userDao;
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @Override
-    public Optional<Object> getRecord(Integer recordId) throws NotFoundException {
-        return this.userDao.getUser(recordId).map(user -> user);
+    public Optional<User> getRecord(Integer recordId) {
+        return this.userRepository.findById(recordId).map(user -> user);
     }
 
-    public Optional<Object> getRecord(String name) throws NotFoundException {
-        return this.userDao.getUser(name).map(user -> user);
+    public Optional<User> getRecord(String name) {
+        return this.userRepository.findByUsername(name).map(user -> user);
     }
 
     @Override
-    public Collection<Optional<Object>> getRecords(Integer pageNumber, Integer pageSize, String... filters) throws NotFoundException {
-        Map<String, Integer> userPaginationMap = ServiceUtils.getPagination(pageNumber, pageSize);
-        return this.userDao.getUsers(userPaginationMap.get("offset"), userPaginationMap.get("limit"))
+    public Collection<Optional<User>> getRecords(Integer pageNumber, Integer pageSize, String... filters) throws NotFoundException {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        return this.userRepository.findAll(pageable)
                 .stream()
-                .map(user -> Optional.of((Object) user.get()))
+                .map(Optional::of)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Collection<Optional<Object>> getDeletedRecords(Integer pageNumber, Integer pageSize) throws NotFoundException {
-        Map<String, Integer> userPaginationMap = ServiceUtils.getPagination(pageNumber, pageSize);
-        return this.userDao.getDeletedUsers(userPaginationMap.get("offset"), userPaginationMap.get("limit"))
+    public Collection<Optional<User>> getDeletedRecords(Integer pageNumber, Integer pageSize) throws NotFoundException {
+        Pageable pageable = ServiceUtils.getPagination(pageNumber, pageSize);
+        return this.userRepository.findAllByIsDeletedTrue(pageable)
                 .stream()
-                .map(user -> Optional.of((Object) user.get()))
+                .map(user -> Optional.of(user.get()))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Boolean createRecord(String newRecord) throws Exception {
-        return this.userDao.createUser(
-                (User) ServiceUtils.getParserRecordFromJson(newRecord, User.class)
-        );
+    public Optional<User> createRecord(String newRecord) throws Exception {
+        return Optional.of(this.userRepository.save(
+                ServiceUtils.getParserRecordFromJson(newRecord, User.class)
+        ));
     }
 
     @Override
-    public Boolean updateRecord(String updatedRecord) throws Exception {
-        return this.userDao.updateUser(
-                (User) ServiceUtils.getParserRecordFromJson(updatedRecord, User.class)
-        );
+    public Optional<User> updateRecord(String updatedRecord) throws Exception {
+        User userFromJson = ServiceUtils.getParserRecordFromJson(updatedRecord, User.class);
+        return Optional.of(this.userRepository.save(userFromJson));
     }
 
     @Override
-    public Boolean deleteRecord(Integer recordId, Boolean isSoftDelete) throws Exception {
+    public void deleteRecord(Integer recordId, Boolean isSoftDelete) throws Exception {
         if (isSoftDelete == null || !isSoftDelete) {
-            return this.userDao.deleteUser(recordId);
+            this.userRepository.deleteById(recordId);
         } else {
-            return this.userDao.deleteUserSoft(recordId);
+            User userToSoftDelete = this.userRepository.getReferenceById(recordId);
+            userToSoftDelete.setIsDeleted(true);
+            this.userRepository.save(userToSoftDelete);
         }
 
     }

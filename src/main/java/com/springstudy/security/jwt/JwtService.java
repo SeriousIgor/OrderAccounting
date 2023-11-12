@@ -1,5 +1,6 @@
 package com.springstudy.security.jwt;
 
+import com.springstudy.utils.PropertyExtractorUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -37,12 +38,18 @@ public class JwtService {
             Map<String, Object> extraClaims,
             UserDetails userDetails
     ) {
+        long expirationTime;
+        try {
+            expirationTime = Long.parseLong(PropertyExtractorUtil.getProperty("token-expiration-time"));
+        } catch (Exception ex) {
+            expirationTime = 15 * 60 * 1000;
+        }
         return Jwts
                 .builder()
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
+                .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }

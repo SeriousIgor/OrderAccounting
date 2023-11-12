@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Deprecated
 @Repository
 public class ClientDaoImplementation implements ClientDao {
     private final JdbcTemplate jdbcTemplate;
@@ -79,7 +80,7 @@ public class ClientDaoImplementation implements ClientDao {
     @Override
     public Boolean updateClient(Client client) throws DatabaseDataUpdateException {
         try {
-            return (jdbcTemplate.update(UPDATE_CLIENT, client.getFirstName(), client.getLastName(), client.getPhoneNumber(), client.getEmail(), client.getClientId())) == 1;
+            return (jdbcTemplate.update(UPDATE_CLIENT, client.getFirstName(), client.getLastName(), client.getPhoneNumber(), client.getEmail(), client.getId())) == 1;
         } catch (DataAccessException ex) {
             LOG.error(ex.getMessage());
             throw new DatabaseDataUpdateException("Client update failed");
