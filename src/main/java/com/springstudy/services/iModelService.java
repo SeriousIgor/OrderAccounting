@@ -5,11 +5,11 @@ import javassist.NotFoundException;
 import java.util.Collection;
 import java.util.Optional;
 
-public interface iModelService {
-    Optional<Object> getRecord(Integer recordId) throws NotFoundException;
-    Collection<Optional<Object>> getRecords(Integer pageNumber, Integer pageSize, String... filters) throws NotFoundException;
-    Collection<Optional<Object>> getDeletedRecords(Integer pageNumber, Integer pageSize) throws NotFoundException;
-    Boolean createRecord(String newRecord) throws Exception;
-    Boolean updateRecord(String updatedRecord) throws Exception;
-    Boolean deleteRecord(Integer recordId, Boolean isSoftDelete) throws Exception;
+public interface iModelService<T> {
+    Optional<T> getRecord(Integer recordId) throws NotFoundException;
+    Collection<Optional<T>> getRecords(Integer pageNumber, Integer pageSize, String... filters) throws NotFoundException;
+    Collection<Optional<T>> getDeletedRecords(Integer pageNumber, Integer pageSize) throws NotFoundException;
+    Optional<T> createRecord(String newRecord) throws Exception;
+    Optional<T> updateRecord(String updatedRecord) throws Exception;
+    void deleteRecord(Integer recordId, Boolean isSoftDelete) throws Exception;
 }

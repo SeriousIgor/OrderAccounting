@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Deprecated
 @Repository
 public class UserDaoImplementation implements UserDao {
     private final JdbcTemplate jdbcTemplate;
@@ -70,7 +71,7 @@ public class UserDaoImplementation implements UserDao {
     @Override
     public Boolean createUser(User user) throws DatabaseDataUpdateException {
         try {
-            return (this.jdbcTemplate.update(CREATE_USER, user.getUserName(), user.getEmail(), user.getPassword(), user.getFirstName(), user.getLastName()) == 1);
+            return (this.jdbcTemplate.update(CREATE_USER, user.getUsername(), user.getEmail(), user.getPassword(), user.getFirstName(), user.getLastName()) == 1);
         } catch (DataAccessException ex) {
             LOG.error(ex.getMessage());
             throw new DatabaseDataUpdateException("Create User failed");
@@ -80,7 +81,7 @@ public class UserDaoImplementation implements UserDao {
     @Override
     public Boolean updateUser(User user) throws DatabaseDataUpdateException {
         try {
-            return (this.jdbcTemplate.update(UPDATE_USER, user.getUserName(), user.getEmail(), user.getPassword(), user.getFirstName(), user.getLastName(), user.getUserId()) == 1);
+            return (this.jdbcTemplate.update(UPDATE_USER, user.getUsername(), user.getEmail(), user.getPassword(), user.getFirstName(), user.getLastName(), user.getId()) == 1);
         } catch (DataAccessException ex) {
             LOG.error(ex.getMessage());
             throw new DatabaseDataUpdateException("Update User failed");
