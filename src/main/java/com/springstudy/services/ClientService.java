@@ -22,7 +22,7 @@ public class ClientService implements iModelService<Client> {
 
     @Override
     public Optional<Client> getRecord(Integer recordId) throws NotFoundException {
-        return this.clientRepository.findById(recordId).map(record -> record);
+        return this.clientRepository.findById(recordId);
     }
 
     @Override
@@ -39,7 +39,6 @@ public class ClientService implements iModelService<Client> {
         return this.clientRepository
                 .findAllByIsDeletedTrue(ServiceUtils.getPagination(pageNumber, pageSize))
                 .stream()
-                .map(client -> Optional.of(client.get()))
                 .collect(Collectors.toList());
     }
 

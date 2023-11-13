@@ -44,12 +44,14 @@ public class Service {
     private String description;
 
     @Column(
-            name = "is_deleted"
+            name = "is_deleted",
+            nullable = false,
+            columnDefinition = "Boolean default 'false'"
     )
     private Boolean isDeleted;
 
-//    @ManyToMany(mappedBy = "enrolledServices")
-//    private Set<Order> orders = new HashSet<>();
+    @ManyToMany(mappedBy = "enrolledServices")
+    private Set<Order> orders = new HashSet<>();
 
     public Service() {
     }
@@ -101,9 +103,17 @@ public class Service {
         isDeleted = deleted;
     }
 
-//    public Set<Order> getOrders() {
-//        return this.orders;
-//    }
+    public Set<Order> getOrders() {
+        return this.orders;
+    }
+
+    public void addOrder(Order order) {
+        this.orders.add(order);
+    }
+
+    public void removeOrder(Order order) {
+        this.orders.remove(order);
+    }
 
     @Override
     public String toString() {

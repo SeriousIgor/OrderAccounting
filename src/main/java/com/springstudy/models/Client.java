@@ -46,15 +46,17 @@ public class Client {
     )
     private String email;
     @Column(
-            name = "is_deleted"
+            name = "is_deleted",
+            nullable = false,
+            columnDefinition = "Boolean default 'false'"
     )
     private Boolean isDeleted;
 
     @OneToMany(mappedBy = "client")
     private Set<Card> cards = new HashSet<>();
 
-//    @OneToMany(mappedBy = "client")
-//    private Set<Order> orders = new HashSet<>();
+    @OneToMany(mappedBy = "client")
+    private Set<Order> orders = new HashSet<>();
 
     public Client(Integer id, String firstName, String lastName, String phoneNumber, String email, Boolean isDeleted) {
         this.id = id;
@@ -65,7 +67,7 @@ public class Client {
         this.isDeleted = isDeleted;
     }
 
-    public Client(String firstName, String lastName, String phoneNumber, String email, Boolean isDeleted) {
+    public Client(String firstName, String lastName, String phoneNumber, String email) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
@@ -127,6 +129,26 @@ public class Client {
 
     public Set<Card> getCards() {
         return this.cards;
+    }
+
+    public void addCard(Card card) {
+        this.cards.add(card);
+    }
+
+    public void removeCard(Card card) {
+        this.cards.remove(card);
+    }
+
+    public Set<Order> getOrders() {
+        return orders;
+    }
+
+    public void addOrder(Order order) {
+        this.orders.add(order);
+    }
+
+    public void removeOrder(Order order) {
+        this.orders.remove(order);
     }
 
     @Override

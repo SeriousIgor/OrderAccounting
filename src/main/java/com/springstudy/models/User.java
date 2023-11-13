@@ -71,8 +71,8 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user")
     private Set<WorkLog> workLogs = new HashSet<>();
 
-//    @OneToMany(mappedBy = "user")
-//    private Set<Order> orders = new HashSet<>();
+    @OneToMany(mappedBy = "user")
+    private Set<Order> orders = new HashSet<>();
 
     public User() {
     }
@@ -190,6 +190,18 @@ public class User implements UserDetails {
 
     public Role getRole() {
         return this.isAdmin ? Role.ADMIN : Role.USER;
+    }
+
+    public Set<Order> getOrders() {
+        return orders;
+    }
+
+    public void addOrder(Order order) {
+        this.orders.add(order);
+    }
+
+    public void removeOrder(Order order) {
+        this.orders.remove(order);
     }
 
     @Override
