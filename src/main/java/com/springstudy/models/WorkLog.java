@@ -1,10 +1,10 @@
 package com.springstudy.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.springstudy.enums.WorkLogAction;
 import jakarta.persistence.*;
-import net.minidev.json.annotate.JsonIgnore;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Table(name = "worklog")
@@ -27,6 +27,7 @@ public class WorkLog {
     )
     private Integer Id;
 
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     @Column(
             name = "worklog_time",
             columnDefinition = "TIMESTAMP"

@@ -2,9 +2,11 @@ package com.springstudy.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.springstudy.enums.OrderStatus;
+import com.springstudy.enums.PaymentMethod;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -53,6 +55,17 @@ public class Order {
     )
     private BigDecimal price;
 
+    @Enumerated(EnumType.STRING)
+    @Column(
+            name = "payment_method"
+    )
+    private PaymentMethod paymentMethod;
+
+    @Column(
+            name = "order_date"
+    )
+    private LocalDateTime orderDate;
+
     @Column(
             name = "is_deleted",
             nullable = false,
@@ -70,35 +83,37 @@ public class Order {
     @JoinColumn(referencedColumnName = "client_id", nullable = false)
     private Client client;
 
-    @JsonIgnore
     @ManyToMany
     @JoinTable(
             name = "service_enrolled",
             joinColumns = @JoinColumn(name = "order_id"),
             inverseJoinColumns = @JoinColumn(name = "service_id")
     )
-    private Set<Service> enrolledServices = new HashSet<>();
+    private Set<Service> services = new HashSet<>();
 
     public Order() {
 
     }
 
-    public Order(String name, String description, OrderStatus orderStatus, BigDecimal price, User user, Client client) {
+    public Order(String name, String description, OrderStatus orderStatus, BigDecimal price, PaymentMethod paymentMethod, LocalDateTime orderDate, User user, Client client) {
         this.name = name;
         this.description = description;
         this.orderStatus = orderStatus;
         this.price = price;
+        this.paymentMethod = paymentMethod;
+        this.orderDate = orderDate;
         this.user = user;
         this.client = client;
     }
 
-    public Order(String name, OrderStatus orderStatus, BigDecimal price, User user, Client client, Set<Service> services) {
+    public Order(String name, OrderStatus orderStatus, BigDecimal price, PaymentMethod paymentMethod, LocalDateTime orderDate, User user, Client client, Set<Service> services) {
         this.name = name;
         this.orderStatus = orderStatus;
         this.price = price;
+        this.orderDate = orderDate;
         this.user = user;
         this.client = client;
-        this.enrolledServices = services;
+        this.services = services;
     }
 
     public Integer getId() {
@@ -141,6 +156,22 @@ public class Order {
         this.price = price;
     }
 
+    public PaymentMethod getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(PaymentMethod paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+
+    public LocalDateTime getOrderDate() {
+        return orderDate;
+    }
+
+    public void setOrderDate(LocalDateTime orderDate) {
+        this.orderDate = orderDate;
+    }
+
     public Boolean getIsDeleted() {
         return this.isDeleted;
     }
@@ -165,12 +196,16 @@ public class Order {
         this.client = client;
     }
 
-    public Set<Service> getEnrolledServices() {
-        return enrolledServices;
+    public Set<Service> getServices() {
+        return services;
     }
 
-    public void enrollService(Service service) {
-        this.enrolledServices.add(service);
+    public void addService(Service service) {
+        this.services.add(service);
+    }
+
+    public void removeService(Service service) {
+        this.services.remove(service);
     }
 
     @Override
@@ -181,10 +216,11 @@ public class Order {
                 ", description='" + description + '\'' +
                 ", orderStatus=" + orderStatus +
                 ", price=" + price +
+                ", orderDate=" + orderDate +
                 ", isDeleted=" + isDeleted +
                 ", user=" + user +
                 ", client=" + client +
-                ", enrolledServices=" + enrolledServices +
+                ", enrolledServices=" + services +
                 '}';
     }
 

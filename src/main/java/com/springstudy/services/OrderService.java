@@ -2,6 +2,7 @@ package com.springstudy.services;
 
 import com.springstudy.models.Order;
 import com.springstudy.repositories.OrderRepository;
+import com.springstudy.repositories.ServiceRepository;
 import com.springstudy.utils.ServiceUtils;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,15 +10,18 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderService implements iModelService<Order>{
 
     private final OrderRepository orderRepository;
+    private final ServiceRepository serviceRepository;
 
     @Autowired
-    public OrderService(OrderRepository orderRepository) {
+    public OrderService(OrderRepository orderRepository, ServiceRepository serviceRepository) {
         this.orderRepository = orderRepository;
+        this.serviceRepository = serviceRepository;
     }
 
     @Override
@@ -57,6 +61,24 @@ public class OrderService implements iModelService<Order>{
         );
     }
 
+    public Optional<Order> addServiceToOrder(Integer recordId, Integer serviceId) throws Exception {
+        Order order = this.orderRepository.getReferenceById(recordId);
+        com.springstudy.models.Service service = this.serviceRepository.findById(serviceId).get();
+        order.addService(service);
+        return Optional.of(
+                this.orderRepository.save(order)
+        );
+    }
+
+    public Optional<Order> removeServiceFromOrder(Integer recordId, Integer serviceId) throws Exception {
+        Order order = this.orderRepository.getReferenceById(recordId);
+        com.springstudy.models.Service service = this.serviceRepository.getReferenceById(serviceId);
+        order.removeService(service);
+        return Optional.of(
+                this.orderRepository.save(order)
+        );
+    }
+
     @Override
     public void deleteRecord(Integer recordId, Boolean isSoftDelete) throws Exception {
         if (isSoftDelete != null && isSoftDelete) {
@@ -66,5 +88,9 @@ public class OrderService implements iModelService<Order>{
         } else {
             this.orderRepository.deleteById(recordId);
         }
+    }
+
+    public Collection<Optional<Order>> getRecordsByClientId(Integer clientId) {
+        return this.orderRepository.findAllByClient_Id(clientId);
     }
 }

@@ -62,7 +62,7 @@ public class ServiceService implements iModelService<com.springstudy.models.Serv
             this.serviceRepository.deleteById(recordId);
         } else {
             com.springstudy.models.Service service = this.serviceRepository.getReferenceById(recordId);
-            service.setDeleted(true);
+            service.setIsDeleted(true);
             this.serviceRepository.save(service);
         }
     }

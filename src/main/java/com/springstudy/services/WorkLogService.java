@@ -1,5 +1,6 @@
 package com.springstudy.services;
 
+import com.springstudy.models.User;
 import com.springstudy.models.WorkLog;
 import com.springstudy.repositories.UserRepository;
 import com.springstudy.repositories.WorkLogRepository;
@@ -37,6 +38,10 @@ public class WorkLogService implements iModelService<WorkLog>{
                 .collect(Collectors.toList());
     }
 
+    public Collection<Optional<WorkLog>> getRecordsByUserId(Integer userId) {
+        return this.workLogRepository.findAllByUser_Id(userId);
+    }
+
     @Override
     public Collection<Optional<WorkLog>> getDeletedRecords(Integer pageNumber, Integer pageSize) throws NotFoundException {
         return null;
@@ -44,9 +49,11 @@ public class WorkLogService implements iModelService<WorkLog>{
 
     @Override
     public Optional<WorkLog> createRecord(String newRecord) throws Exception {
+        WorkLog workLog = ServiceUtils.getParserRecordFromJson(newRecord, WorkLog.class);
+        User user = this.userRepository.getReferenceById(workLog.getUser().getId());
+        workLog.setUser(user);
         return Optional.of(
-                this.workLogRepository.save(
-                    ServiceUtils.getParserRecordFromJson(newRecord, WorkLog.class))
+                this.workLogRepository.save(workLog)
             );
     }
 

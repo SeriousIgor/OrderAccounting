@@ -192,6 +192,18 @@ public class User implements UserDetails {
         return this.isAdmin ? Role.ADMIN : Role.USER;
     }
 
+    public Set<WorkLog> getWorkLogs() {
+        return this.workLogs;
+    }
+
+    public void addWorkLog(WorkLog workLog) {
+        this.workLogs.add(workLog);
+    }
+
+    public void removeWorkLog(WorkLog workLog) {
+        this.workLogs.remove(workLog);
+    }
+
     public Set<Order> getOrders() {
         return orders;
     }

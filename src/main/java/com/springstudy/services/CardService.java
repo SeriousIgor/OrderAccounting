@@ -32,28 +32,35 @@ public class CardService implements iModelService<Card> {
 
     @Override
     public Collection<Optional<Card>> getRecords(Integer pageNumber, Integer pageSize, String... filters) throws NotFoundException {
-        return this.cardRepository.findAllByIsDeletedFalse(ServiceUtils.getPagination(pageNumber, pageSize))
-                .stream()
-                .map(card -> Optional.of(card.get()))
-                .collect(Collectors.toList());
+        return this.cardRepository.findAllByIsDeletedFalse(
+                ServiceUtils.getPagination(pageNumber, pageSize)
+        );
     }
 
     @Override
     public Collection<Optional<Card>> getDeletedRecords(Integer pageNumber, Integer pageSize) throws NotFoundException {
-        return null;
+        return this.cardRepository.findAllByIsDeletedTrue(
+                ServiceUtils.getPagination(pageNumber, pageSize)
+        );
+    }
+
+    public Collection<Optional<Card>> getRecordsByClientId(Integer clientId) {
+        return this.cardRepository.findAllByClient_Id(clientId);
     }
 
     @Override
     public Optional<Card> createRecord(String newRecord) throws Exception {
         Card card = ServiceUtils.getParserRecordFromJson(newRecord, Card.class);
-        Client client = this.clientRepository.getReferenceById(card.getClient().getId());
-        card.setClient(client);
         return Optional.of(this.cardRepository.save(card));
     }
 
     @Override
     public Optional<Card> updateRecord(String updatedRecord) throws Exception {
-        return Optional.empty();
+        return Optional.of(
+                this.cardRepository.save(
+                        ServiceUtils.getParserRecordFromJson(updatedRecord, Card.class)
+                )
+        );
     }
 
     @Override

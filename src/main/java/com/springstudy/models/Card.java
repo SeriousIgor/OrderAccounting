@@ -59,7 +59,10 @@ public class Card {
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "client_id", nullable = false)
+    @JoinColumn(
+            name = "client_id",
+            nullable = false
+    )
     Client client;
 
     public Card() {

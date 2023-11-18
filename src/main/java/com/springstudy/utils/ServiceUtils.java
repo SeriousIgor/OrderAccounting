@@ -3,6 +3,7 @@ package com.springstudy.utils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
@@ -18,8 +19,13 @@ public class ServiceUtils {
         return PageRequest.of(pgNum, pgSize);
     }
 
+    public static <T>String getJsonFromObject(Object object) throws JsonProcessingException {
+        return new ObjectMapper().writeValueAsString(object);
+    }
+
     public static <T>T getParserRecordFromJson(String jsonValue, Class<T> modelClass) throws JsonProcessingException, IllegalAccessException {
         ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
         JsonNode jsonNode = objectMapper.readTree(jsonValue);
 
         T result = objectMapper.treeToValue(jsonNode, modelClass);

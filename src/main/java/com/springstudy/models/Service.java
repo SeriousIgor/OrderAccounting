@@ -1,5 +1,6 @@
 package com.springstudy.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
@@ -50,7 +51,8 @@ public class Service {
     )
     private Boolean isDeleted;
 
-    @ManyToMany(mappedBy = "enrolledServices")
+    @JsonIgnore
+    @ManyToMany(mappedBy = "services")
     private Set<Order> orders = new HashSet<>();
 
     public Service() {
@@ -95,11 +97,11 @@ public class Service {
         this.description = description;
     }
 
-    public Boolean getDeleted() {
+    public Boolean getIsDeleted() {
         return isDeleted;
     }
 
-    public void setDeleted(Boolean deleted) {
+    public void setIsDeleted(Boolean deleted) {
         isDeleted = deleted;
     }
 

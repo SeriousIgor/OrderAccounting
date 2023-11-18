@@ -9,4 +9,8 @@ import java.util.Optional;
 
 public interface CardRepository extends JpaRepository<Card, Integer> {
     List<Optional<Card>> findAllByIsDeletedFalse(Pageable pageable);
+    List<Optional<Card>> findAllByIsDeletedTrue(Pageable pageable);
+
+    List<Optional<Card>> findAllByClient_Id(Integer clientId);
+
 }
