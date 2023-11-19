@@ -57,12 +57,14 @@ public class Order {
 
     @Enumerated(EnumType.STRING)
     @Column(
-            name = "payment_method"
+            name = "payment_method",
+            nullable = false
     )
     private PaymentMethod paymentMethod;
 
     @Column(
-            name = "order_date"
+            name = "order_date",
+            nullable = false
     )
     private LocalDateTime orderDate;
 
@@ -110,6 +112,7 @@ public class Order {
         this.name = name;
         this.orderStatus = orderStatus;
         this.price = price;
+        this.paymentMethod = paymentMethod;
         this.orderDate = orderDate;
         this.user = user;
         this.client = client;

@@ -35,4 +35,12 @@ public class ReportController {
         );
     }
 
+    @GetMapping("/user/{userId}/yearMetrics")
+    public ResponseEntity<String> getYearMetricsForUser(
+            @PathVariable Integer userId
+    ) throws JsonProcessingException {
+        return ResponseEntity.ok(
+                this.reportService.getYearlyReportForUser(userId)
+        );
+    }
 }

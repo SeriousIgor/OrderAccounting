@@ -9,15 +9,11 @@ import com.springstudy.repositories.ClientRepository;
 import com.springstudy.repositories.OrderRepository;
 import com.springstudy.repositories.UserRepository;
 import com.springstudy.utils.MetricsCalculationUtils;
-import com.springstudy.utils.ServiceUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class ReportService {
@@ -32,7 +28,7 @@ public class ReportService {
         this.userRepository = userRepository;
     }
 
-    private Map<String, Object> getMetricParamMapForEntity(Object modelInstance, Collection<Optional<Order>> orders) throws JsonProcessingException {
+    private Map<String, Object> getMetricParamMapForEntity(Collection<Optional<Order>> orders) throws JsonProcessingException {
         // Metrics variable preparation
         int newOrderNumber = 0;
         int inProgressOrderNumber = 0;
@@ -87,7 +83,6 @@ public class ReportService {
                 .orElse(null);
 
         Map<String, Object> jsonParamMap = new HashMap<>();
-//        jsonParamMap.put("clientInfo", ServiceUtils.getJsonFromObject(modelInstance));
         jsonParamMap.put("totalOrderNumber", orders.size());
         jsonParamMap.put("totalOrderSum", totalOrderSum);
         jsonParamMap.put("newOrderNumber", newOrderNumber);
@@ -104,14 +99,43 @@ public class ReportService {
         Client client = this.clientRepository.getReferenceById(clientId);
         Collection<Optional<Order>> orders = this.orderRepository.findAllByClient_Id(clientId);
 
-        Map<String, Object> clientMetricsMap = getMetricParamMapForEntity(client, orders);
+        Map<String, Object> clientMetricsMap = getMetricParamMapForEntity(orders);
         return MetricsCalculationUtils.getReportJSON(clientMetricsMap);
     }
 
     public String getReportForUserSuccessMetrics(Integer userId) throws JsonProcessingException {
         User user = this.userRepository.getReferenceById(userId);
         Collection<Optional<Order>> orders = this.orderRepository.findAllByUser_Id(userId);
-        Map<String, Object> userMetricsMap = getMetricParamMapForEntity(user, orders);
+        Map<String, Object> userMetricsMap = getMetricParamMapForEntity(orders);
         return MetricsCalculationUtils.getReportJSON(userMetricsMap);
+    }
+
+    public String getYearlyReportForUser(Integer userId) throws JsonProcessingException {
+        User user = this.userRepository.getReferenceById(userId);
+        Collection<Optional<Order>> orders = this.orderRepository.findAllByUser_Id(userId);
+        Map<Integer, Collection<Optional<Order>>> yearToOrderMap = new HashMap<>();
+        for (Optional<Order> optionalOrder : orders) {
+            if (optionalOrder.isPresent()) {
+                Integer orderYear = optionalOrder.get().getOrderDate().getYear();
+                if (yearToOrderMap.containsKey(orderYear)) {
+                    yearToOrderMap.get(orderYear).add(optionalOrder);
+                } else {
+                    Collection<Optional<Order>> yearRelatedOrders = new ArrayList<>();
+                    yearRelatedOrders.add(optionalOrder);
+                    yearToOrderMap.put(orderYear, yearRelatedOrders);
+                }
+            }
+        }
+        Map<String, Object> userYearlyMetricsMap = getMetricParamMapForEntity(orders);
+        Collection<String> userMetricsStringCollection = new ArrayList<>();
+        for (Integer year : yearToOrderMap.keySet()) {
+            userMetricsStringCollection.add(
+                    MetricsCalculationUtils.getReportJSON(
+                            getMetricParamMapForEntity(yearToOrderMap.get(year))
+                    )
+            );
+        }
+        userYearlyMetricsMap.put("yearlyOrderMetrics", userMetricsStringCollection);
+        return MetricsCalculationUtils.getReportJSON(userYearlyMetricsMap);
     }
 }
