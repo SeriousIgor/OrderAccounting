@@ -96,7 +96,7 @@ public class Order {
 
     }
 
-    public Order(String name, String description, OrderStatus orderStatus, BigDecimal price, PaymentMethod paymentMethod, LocalDateTime orderDate, User user, Client client) {
+    public Order(String name,  String description, OrderStatus orderStatus, BigDecimal price, PaymentMethod paymentMethod, LocalDateTime orderDate, User user, Client client) {
         this.name = name;
         this.description = description;
         this.orderStatus = orderStatus;
@@ -107,8 +107,9 @@ public class Order {
         this.client = client;
     }
 
-    public Order(String name, OrderStatus orderStatus, BigDecimal price, PaymentMethod paymentMethod, LocalDateTime orderDate, User user, Client client, Set<Service> services) {
+    public Order(String name, String description, OrderStatus orderStatus, BigDecimal price, PaymentMethod paymentMethod, LocalDateTime orderDate, User user, Client client, Set<Service> services) {
         this.name = name;
+        this.description = description;
         this.orderStatus = orderStatus;
         this.price = price;
         this.paymentMethod = paymentMethod;
