@@ -1,17 +1,15 @@
 package com.springstudy.services;
 
 import com.springstudy.models.Card;
-import com.springstudy.models.Client;
 import com.springstudy.repositories.CardRepository;
 import com.springstudy.repositories.ClientRepository;
-import com.springstudy.utils.ServiceUtils;
+import com.springstudy.utils.ServiceUtil;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service("CardService")
 public class CardService implements iModelService<Card> {
@@ -33,14 +31,14 @@ public class CardService implements iModelService<Card> {
     @Override
     public Collection<Optional<Card>> getRecords(Integer pageNumber, Integer pageSize, String... filters) throws NotFoundException {
         return this.cardRepository.findAllByIsDeletedFalse(
-                ServiceUtils.getPagination(pageNumber, pageSize)
+                ServiceUtil.getPagination(pageNumber, pageSize)
         );
     }
 
     @Override
     public Collection<Optional<Card>> getDeletedRecords(Integer pageNumber, Integer pageSize) throws NotFoundException {
         return this.cardRepository.findAllByIsDeletedTrue(
-                ServiceUtils.getPagination(pageNumber, pageSize)
+                ServiceUtil.getPagination(pageNumber, pageSize)
         );
     }
 
@@ -50,7 +48,7 @@ public class CardService implements iModelService<Card> {
 
     @Override
     public Optional<Card> createRecord(String newRecord) throws Exception {
-        Card card = ServiceUtils.getParserRecordFromJson(newRecord, Card.class);
+        Card card = ServiceUtil.getParserRecordFromJson(newRecord, Card.class);
         return Optional.of(this.cardRepository.save(card));
     }
 
@@ -58,7 +56,7 @@ public class CardService implements iModelService<Card> {
     public Optional<Card> updateRecord(String updatedRecord) throws Exception {
         return Optional.of(
                 this.cardRepository.save(
-                        ServiceUtils.getParserRecordFromJson(updatedRecord, Card.class)
+                        ServiceUtil.getParserRecordFromJson(updatedRecord, Card.class)
                 )
         );
     }

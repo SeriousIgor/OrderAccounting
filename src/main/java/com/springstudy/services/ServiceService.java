@@ -1,7 +1,7 @@
 package com.springstudy.services;
 
 import com.springstudy.repositories.ServiceRepository;
-import com.springstudy.utils.ServiceUtils;
+import com.springstudy.utils.ServiceUtil;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -26,7 +26,7 @@ public class ServiceService implements iModelService<com.springstudy.models.Serv
 
     @Override
     public Collection<Optional<com.springstudy.models.Service>> getRecords(Integer pageNumber, Integer pageSize, String... filters) throws NotFoundException {
-        Pageable pageable = ServiceUtils.getPagination(pageNumber, pageSize);
+        Pageable pageable = ServiceUtil.getPagination(pageNumber, pageSize);
         return this.serviceRepository.findAll(pageable)
                 .stream()
                 .map(Optional::of)
@@ -35,7 +35,7 @@ public class ServiceService implements iModelService<com.springstudy.models.Serv
 
     @Override
     public Collection<Optional<com.springstudy.models.Service>> getDeletedRecords(Integer pageNumber, Integer pageSize) throws NotFoundException {
-        Pageable pageable = ServiceUtils.getPagination(pageNumber, pageSize);
+        Pageable pageable = ServiceUtil.getPagination(pageNumber, pageSize);
         return this.serviceRepository.findAllByIsDeletedTrue(pageable)
                 .stream()
                 .map(service -> Optional.of(service.get()))
@@ -45,14 +45,14 @@ public class ServiceService implements iModelService<com.springstudy.models.Serv
     @Override
     public Optional<com.springstudy.models.Service> createRecord(String newRecord) throws Exception {
         return Optional.of(this.serviceRepository.save(
-                ServiceUtils.getParserRecordFromJson(newRecord, com.springstudy.models.Service.class)
+                ServiceUtil.getParserRecordFromJson(newRecord, com.springstudy.models.Service.class)
             )
         );
     }
 
     @Override
     public Optional<com.springstudy.models.Service> updateRecord(String updatedRecord) throws Exception {
-        com.springstudy.models.Service service = ServiceUtils.getParserRecordFromJson(updatedRecord, com.springstudy.models.Service.class);
+        com.springstudy.models.Service service = ServiceUtil.getParserRecordFromJson(updatedRecord, com.springstudy.models.Service.class);
         return Optional.of(this.serviceRepository.save(service));
     }
 

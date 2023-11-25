@@ -3,16 +3,15 @@ package com.springstudy.services;
 import com.springstudy.models.Order;
 import com.springstudy.repositories.OrderRepository;
 import com.springstudy.repositories.ServiceRepository;
-import com.springstudy.utils.ServiceUtils;
+import com.springstudy.utils.ServiceUtil;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
-@Service
+@Service("OrderService")
 public class OrderService implements iModelService<Order>{
 
     private final OrderRepository orderRepository;
@@ -32,14 +31,14 @@ public class OrderService implements iModelService<Order>{
     @Override
     public Collection<Optional<Order>> getRecords(Integer pageNumber, Integer pageSize, String... filters) throws NotFoundException {
         return this.orderRepository.findAllByIsDeletedFalse(
-                ServiceUtils.getPagination(pageNumber, pageSize)
+                ServiceUtil.getPagination(pageNumber, pageSize)
         );
     }
 
     @Override
     public Collection<Optional<Order>> getDeletedRecords(Integer pageNumber, Integer pageSize) throws NotFoundException {
         return this.orderRepository.findAllByIsDeletedTrue(
-                ServiceUtils.getPagination(pageNumber, pageSize)
+                ServiceUtil.getPagination(pageNumber, pageSize)
         );
     }
 
@@ -47,7 +46,7 @@ public class OrderService implements iModelService<Order>{
     public Optional<Order> createRecord(String newRecord) throws Exception {
         return Optional.of(
                 this.orderRepository.save(
-                        ServiceUtils.getParserRecordFromJson(newRecord, Order.class)
+                        ServiceUtil.getParserRecordFromJson(newRecord, Order.class)
                 )
         );
     }
@@ -56,7 +55,7 @@ public class OrderService implements iModelService<Order>{
     public Optional<Order> updateRecord(String updatedRecord) throws Exception {
         return Optional.of(
                 this.orderRepository.save(
-                        ServiceUtils.getParserRecordFromJson(updatedRecord, Order.class)
+                        ServiceUtil.getParserRecordFromJson(updatedRecord, Order.class)
                 )
         );
     }

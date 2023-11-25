@@ -2,7 +2,7 @@ package com.springstudy.services;
 
 import com.springstudy.models.Client;
 import com.springstudy.repositories.ClientRepository;
-import com.springstudy.utils.ServiceUtils;
+import com.springstudy.utils.ServiceUtil;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,7 +28,7 @@ public class ClientService implements iModelService<Client> {
     @Override
     public Collection<Optional<Client>> getRecords(Integer pageNumber, Integer pageSize, String... filters) throws NotFoundException {
         return this.clientRepository
-                .findAll(ServiceUtils.getPagination(pageNumber, pageSize))
+                .findAll(ServiceUtil.getPagination(pageNumber, pageSize))
                 .stream()
                 .map(Optional::of)
                 .collect(Collectors.toList());
@@ -37,7 +37,7 @@ public class ClientService implements iModelService<Client> {
     @Override
     public Collection<Optional<Client>> getDeletedRecords(Integer pageNumber, Integer pageSize) throws NotFoundException {
         return this.clientRepository
-                .findAllByIsDeletedTrue(ServiceUtils.getPagination(pageNumber, pageSize))
+                .findAllByIsDeletedTrue(ServiceUtil.getPagination(pageNumber, pageSize))
                 .stream()
                 .collect(Collectors.toList());
     }
@@ -45,7 +45,7 @@ public class ClientService implements iModelService<Client> {
     @Override
     public Optional<Client> createRecord(String newRecord) throws Exception {
         return Optional.of(this.clientRepository.save(
-                ServiceUtils.getParserRecordFromJson(newRecord, Client.class)
+                ServiceUtil.getParserRecordFromJson(newRecord, Client.class)
             )
         );
     }
@@ -53,7 +53,7 @@ public class ClientService implements iModelService<Client> {
     @Override
     public Optional<Client> updateRecord(String updatedRecord) throws Exception {
         return Optional.of(this.clientRepository.save(
-                ServiceUtils.getParserRecordFromJson(updatedRecord, Client.class)
+                ServiceUtil.getParserRecordFromJson(updatedRecord, Client.class)
             )
         );
     }

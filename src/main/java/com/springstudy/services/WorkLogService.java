@@ -4,7 +4,7 @@ import com.springstudy.models.User;
 import com.springstudy.models.WorkLog;
 import com.springstudy.repositories.UserRepository;
 import com.springstudy.repositories.WorkLogRepository;
-import com.springstudy.utils.ServiceUtils;
+import com.springstudy.utils.ServiceUtil;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +13,7 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Service
+@Service("WorkLogService")
 public class WorkLogService implements iModelService<WorkLog>{
 
     private final WorkLogRepository workLogRepository;
@@ -32,7 +32,7 @@ public class WorkLogService implements iModelService<WorkLog>{
 
     @Override
     public Collection<Optional<WorkLog>> getRecords(Integer pageNumber, Integer pageSize, String... filters) throws NotFoundException {
-        return this.workLogRepository.findAll(ServiceUtils.getPagination(pageNumber, pageSize))
+        return this.workLogRepository.findAll(ServiceUtil.getPagination(pageNumber, pageSize))
                 .stream()
                 .map(Optional::of)
                 .collect(Collectors.toList());
@@ -49,7 +49,7 @@ public class WorkLogService implements iModelService<WorkLog>{
 
     @Override
     public Optional<WorkLog> createRecord(String newRecord) throws Exception {
-        WorkLog workLog = ServiceUtils.getParserRecordFromJson(newRecord, WorkLog.class);
+        WorkLog workLog = ServiceUtil.getParserRecordFromJson(newRecord, WorkLog.class);
         User user = this.userRepository.getReferenceById(workLog.getUser().getId());
         workLog.setUser(user);
         return Optional.of(
@@ -61,7 +61,7 @@ public class WorkLogService implements iModelService<WorkLog>{
     public Optional<WorkLog> updateRecord(String updatedRecord) throws Exception {
         return Optional.of(
                 this.workLogRepository.save(
-                        ServiceUtils.getParserRecordFromJson(updatedRecord, WorkLog.class)
+                        ServiceUtil.getParserRecordFromJson(updatedRecord, WorkLog.class)
                 )
         );
     }

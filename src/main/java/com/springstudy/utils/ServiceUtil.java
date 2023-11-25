@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.lang.reflect.Field;
 
-public class ServiceUtils {
+public class ServiceUtil {
 
     public static Pageable getPagination(Integer pageNumber, Integer pageSize) {
         boolean isInvalidPageNumber = (pageNumber == null || pageNumber < 0);

@@ -1,4 +1,4 @@
-package com.springstudy.controllers;
+package com.springstudy.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.springstudy.enums.PaymentMethod;
@@ -8,14 +8,14 @@ import com.springstudy.models.User;
 import com.springstudy.repositories.ClientRepository;
 import com.springstudy.repositories.OrderRepository;
 import com.springstudy.repositories.UserRepository;
-import com.springstudy.utils.MetricsCalculationUtils;
+import com.springstudy.utils.MetricsCalculationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.*;
 
-@Service
+@Service("ReportService")
 public class ReportService {
     private final OrderRepository orderRepository;
     private final ClientRepository clientRepository;
@@ -100,14 +100,14 @@ public class ReportService {
         Collection<Optional<Order>> orders = this.orderRepository.findAllByClient_Id(clientId);
 
         Map<String, Object> clientMetricsMap = getMetricParamMapForEntity(orders);
-        return MetricsCalculationUtils.getReportJSON(clientMetricsMap);
+        return MetricsCalculationUtil.getReportJSON(clientMetricsMap);
     }
 
     public String getReportForUserSuccessMetrics(Integer userId) throws JsonProcessingException {
         User user = this.userRepository.getReferenceById(userId);
         Collection<Optional<Order>> orders = this.orderRepository.findAllByUser_Id(userId);
         Map<String, Object> userMetricsMap = getMetricParamMapForEntity(orders);
-        return MetricsCalculationUtils.getReportJSON(userMetricsMap);
+        return MetricsCalculationUtil.getReportJSON(userMetricsMap);
     }
 
     public String getYearlyReportForUser(Integer userId) throws JsonProcessingException {
@@ -130,12 +130,12 @@ public class ReportService {
         Collection<String> userMetricsStringCollection = new ArrayList<>();
         for (Integer year : yearToOrderMap.keySet()) {
             userMetricsStringCollection.add(
-                    MetricsCalculationUtils.getReportJSON(
+                    MetricsCalculationUtil.getReportJSON(
                             getMetricParamMapForEntity(yearToOrderMap.get(year))
                     )
             );
         }
         userYearlyMetricsMap.put("yearlyOrderMetrics", userMetricsStringCollection);
-        return MetricsCalculationUtils.getReportJSON(userYearlyMetricsMap);
+        return MetricsCalculationUtil.getReportJSON(userYearlyMetricsMap);
     }
 }

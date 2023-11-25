@@ -11,7 +11,6 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-
 @Entity(name = "Orders")
 @Table(name = "orders")
 public class Order {

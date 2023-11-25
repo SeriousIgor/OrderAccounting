@@ -2,7 +2,7 @@ package com.springstudy.services;
 
 import com.springstudy.models.User;
 import com.springstudy.repositories.UserRepository;
-import com.springstudy.utils.ServiceUtils;
+import com.springstudy.utils.ServiceUtil;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -10,7 +10,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -43,7 +42,7 @@ public class UserService implements iModelService<User> {
 
     @Override
     public Collection<Optional<User>> getDeletedRecords(Integer pageNumber, Integer pageSize) throws NotFoundException {
-        Pageable pageable = ServiceUtils.getPagination(pageNumber, pageSize);
+        Pageable pageable = ServiceUtil.getPagination(pageNumber, pageSize);
         return this.userRepository.findAllByIsDeletedTrue(pageable)
                 .stream()
                 .map(user -> Optional.of(user.get()))
@@ -53,13 +52,13 @@ public class UserService implements iModelService<User> {
     @Override
     public Optional<User> createRecord(String newRecord) throws Exception {
         return Optional.of(this.userRepository.save(
-                ServiceUtils.getParserRecordFromJson(newRecord, User.class)
+                ServiceUtil.getParserRecordFromJson(newRecord, User.class)
         ));
     }
 
     @Override
     public Optional<User> updateRecord(String updatedRecord) throws Exception {
-        User userFromJson = ServiceUtils.getParserRecordFromJson(updatedRecord, User.class);
+        User userFromJson = ServiceUtil.getParserRecordFromJson(updatedRecord, User.class);
         return Optional.of(this.userRepository.save(userFromJson));
     }
 
